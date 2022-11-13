@@ -1,0 +1,3 @@
+{
+  "pattern": "(^(feat(ure)?|fix|hotfix|release|chore|test|lint|refactor|supplementary)/.+)|(Develop|Hotfix|Release)"
+}
