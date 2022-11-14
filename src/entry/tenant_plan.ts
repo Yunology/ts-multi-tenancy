@@ -44,7 +44,7 @@ export const TenantPlanColumn: (options?: ColumnOptions) => PropertyDecorator = 
   options?: ColumnOptions,
 ) => Column({
   ...options,
-  type: 'enum',
+  type: 'varchar',
   transformer: {
     to: (value: TenantPlanInfo) => value.schemaName,
     from: (value: string) => getTenantService().getPlan(value),
