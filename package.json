@@ -1,6 +1,6 @@
 {
   "name": "@yunology/multi-tenancy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -13,7 +13,9 @@
   "author": "Clooooode <jackey8616@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "postinstall": "sh ./scripts/postinstall.sh",
+    "postinstall": "npx husky install",
+    "prepack": "pinst --disable",
+    "postpack": "pinst --enable",
     "typeorm:cli": "ts-node ./node_modules/typeorm/cli.js -d ./cli_datasource.ts",
     "build": "sh ./scripts/build.sh"
   },
@@ -24,6 +26,7 @@
     "@types/node": "^18.11.9",
     "git-commit-msg-linter": "^4.2.1",
     "husky": "^8.0.2",
+    "pinst": "^3.0.0",
     "typescript": "^4.8.4",
     "validate-branch-name": "^1.3.0"
   },
