@@ -1,7 +1,11 @@
 {
   "name": "multi-tenancy",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
   "repository": "git@github.com:Yunology/multi-tenancy.git",
   "author": "Clooooode <jackey8616@gmail.com>",
   "license": "MIT",
