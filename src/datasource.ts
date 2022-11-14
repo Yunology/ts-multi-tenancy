@@ -88,7 +88,7 @@ export function createRedisDataSource(url: string): RedisClientType {
   return redisDataSource;
 }
 
-export function createSessionRedisStore(url: string) {
+export function createSessionRedisStore(url: string): RedisClientType {
   if (sessionRedis !== undefined) {
     throw new Error('SessionRedis is already created.');
   }
