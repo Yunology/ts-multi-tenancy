@@ -132,7 +132,7 @@ export class RuntimeTenant {
    * @param test Permission or permission index to be compare.
    * @returns matched or not.
    */
-   private isPermissionMatched(target: Permission | number, test: Permission | number): boolean {
+   public isPermissionMatched(target: Permission | number, test: Permission | number): boolean {
     const targetInstance = target instanceof Permission ? target.index : target;
     const testInstance = test instanceof Permission ? test.index : test;
     if (targetInstance === 0xFFFF || targetInstance === testInstance) { return true; }

@@ -1,7 +1,7 @@
 // src/infrastructure/tenant.ts
 import { EntityManager } from 'typeorm';
 
-import { InfrastructureManyModifiable } from '../infrastructure';
+import { InfrastructureManyModifiable } from './infrastructure';
 import {
   Tenant, Config, TenantPlan, Database,
 } from '../entry';
