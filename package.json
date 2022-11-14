@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "postinstall": "husky install",
+    "postinstall": "sh ./scripts/postinstall.sh",
     "typeorm:cli": "ts-node ./node_modules/typeorm/cli.js -d ./cli_datasource.ts",
     "build": "sh ./scripts/build.sh"
   },

@@ -6,4 +6,3 @@ let tenantService: TenantService;
 export function getTenantService(): TenantService {
   return tenantService;
 }
-
