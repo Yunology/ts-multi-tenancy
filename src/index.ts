@@ -4,6 +4,7 @@ import { TenantService } from './service';
 let tenantService: TenantService;
 
 export * from './controller';
+export * from './middleware';
 export * from './dto';
 export * from './entry';
 export * from './infrastructure';
