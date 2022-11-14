@@ -2,15 +2,13 @@
 import { EntityManager } from 'typeorm';
 import { isUndefined, cloneDeep } from 'lodash';
 
+import { Service } from './service';
 import {
   Tenant, TenantPlanInfo, RuntimeTenant, Database,
-} from '@/entry';
-import { CreateTenantDTO, CreateDatabaseDTO } from '@/dto';
-import { DatabaseInfrastructure, TenantInfrastructure } from '@/infrastructure';
-import { createDataSource, getSystemDataSource } from '@/datasource';
-
-import { Service } from './service';
-
+} from '../entry';
+import { CreateTenantDTO, CreateDatabaseDTO } from '../dto';
+import { DatabaseInfrastructure, TenantInfrastructure } from '../infrastructure';
+import { createDataSource, getSystemDataSource } from '../datasource';
 export class TenantService {
   private loadedModules: Record<string, Service> = {};
   private databases: Record<string, Database> = {};

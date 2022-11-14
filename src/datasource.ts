@@ -8,12 +8,12 @@ import session from 'express-session';
 import connectRedis, { RedisStore } from 'connect-redis';
 
 // Tenant entitires & migrations
-import { Tenant, Database } from '@/entry';
+import { Tenant, Database } from './entry';
 import {
   TenantInit1666672671893, TenantTableConfigField1666798005898,
   TenantTablePlanField1667030240831, TenantTableDatabaseUrlField1667050447866,
   TenantTableDatabaseField1667111877341,
-} from '@/migration';
+} from './migration';
 
 const RedisStore = connectRedis(session);
 

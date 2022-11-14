@@ -1,7 +1,7 @@
 // src/middleware/tenant.ts
 import { Request, Response, NextFunction } from 'express';
 
-import { TenantService } from '@/service';
+import { TenantService } from '../service';
 
 export function tenantMiddleware(
   req: Request,

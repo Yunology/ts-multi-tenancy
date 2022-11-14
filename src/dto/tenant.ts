@@ -1,5 +1,5 @@
 // src/dto/tenant.ts
-import { Config, TenantPlan } from '@/entry';
+import { Config, TenantPlan } from '../entry';
 
 export class CreateTenantDTO {
   name!: string;

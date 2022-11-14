@@ -1,5 +1,5 @@
 // src/infrastructure/redis.ts
-import { getRedisDataSource } from '@/datasource';
+import { getRedisDataSource } from '../datasource';
 
 export class RedisCache {
   private prefix: string;

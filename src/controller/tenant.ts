@@ -3,9 +3,9 @@ import {
   Body, Controller, Get, Post, Route, Tags,
 } from 'tsoa';
 
-import { getTenantService } from '@/index';
-import { Database, Tenant } from '@/entry';
-import { CreateDatabaseDTO, CreateTenantDTO } from '@/dto';
+import { getTenantService } from '../index';
+import { Database, Tenant } from '../entry';
+import { CreateDatabaseDTO, CreateTenantDTO } from '../dto';
 
 @Tags('Tenant')
 @Route('tenant')

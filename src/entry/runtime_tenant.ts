@@ -2,13 +2,13 @@
 import { DataSource } from 'typeorm';
 import { groupBy, isEmpty, isUndefined, omitBy } from 'lodash';
 
-import { Service } from '@/service';
-import { Permission } from '@/entry';
-import { getDataSource, createDataSource } from '@/datasource';
-
 import { Tenant } from './tenant.entry';
 import { Database } from './database.entry';
 import { TenantPlanInfo } from './tenant_plan';
+
+import { Service } from '../service';
+import { Permission } from '../entry';
+import { getDataSource, createDataSource } from '../datasource';
 
 export class RuntimeTenant {
   private tenant: Tenant;
