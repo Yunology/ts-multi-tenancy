@@ -1,11 +1,9 @@
-name: Build
-
+name: Publish package to GitHub Packages
 on:
   push:
     branches:
       - 'Develop'
       - 'Release'
-
 jobs:
   build:
     name: Building
@@ -15,6 +13,7 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v3
+      # Setup .npmrc file to publish to GitHub Packages
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
