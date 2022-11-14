@@ -2,20 +2,10 @@
 /* eslint-disable @typescript-eslint/ban-types, no-underscore-dangle */
 import { Column, ColumnOptions } from 'typeorm';
 
+import { getTenantService } from '..';
 import { Service } from '../service';
 
-export enum TenantPlan {
-  STANDARD = 'standard',
-}
-
 export class TenantPlanInfo {
-  static fromName(name: string): TenantPlanInfo {
-    switch (name) {
-      default:
-        throw new Error(`No such schemaName ${name}`);
-    }
-  }
-
   private readonly _schemaName: string;
   private readonly _modules: Array<typeof Service>;
   private readonly _entries: Array<Function>;
@@ -55,6 +45,8 @@ export const TenantPlanColumn: (options?: ColumnOptions) => PropertyDecorator = 
 ) => Column({
   ...options,
   type: 'enum',
-  enum: TenantPlan,
-  comment: 'STANDARD: 標準方案',
+  transformer: {
+    to: (value: TenantPlanInfo) => value.schemaName,
+    from: (value: string) => getTenantService().getPlan(value),
+  },
 });

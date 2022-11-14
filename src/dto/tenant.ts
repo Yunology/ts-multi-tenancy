@@ -1,5 +1,5 @@
 // src/dto/tenant.ts
-import { Config, TenantPlan } from '../entry';
+import { Config } from '../entry';
 
 export class CreateTenantDTO {
   name!: string;
@@ -7,5 +7,5 @@ export class CreateTenantDTO {
   activate!: boolean;
   database!: string;
   config!: Config;
-  plan!: TenantPlan;
+  plan!: string;
 }

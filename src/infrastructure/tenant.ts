@@ -3,7 +3,7 @@ import { EntityManager } from 'typeorm';
 
 import { InfrastructureManyModifiable } from './infrastructure';
 import {
-  Tenant, Config, TenantPlan, Database,
+  Tenant, Config, Database, TenantPlanInfo,
 } from '../entry';
 
 export class TenantInfrastructure extends InfrastructureManyModifiable<Tenant> {
@@ -42,7 +42,7 @@ export class TenantInfrastructure extends InfrastructureManyModifiable<Tenant> {
     activate: boolean,
     database: Database,
     config: Config,
-    plan: TenantPlan,
+    plan: TenantPlanInfo,
   ): Promise<Tenant> {
     const tenant = new Tenant();
     tenant.name = name;

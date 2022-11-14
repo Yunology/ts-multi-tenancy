@@ -9,17 +9,27 @@ import {
 import { CreateTenantDTO, CreateDatabaseDTO } from '../dto';
 import { DatabaseInfrastructure, TenantInfrastructure } from '../infrastructure';
 import { createDataSource, getSystemDataSource } from '../datasource';
+
 export class TenantService {
+  private loadedPlans: Record<string, TenantPlanInfo> = {};
   private loadedModules: Record<string, Service> = {};
   private databases: Record<string, Database> = {};
   private runtimeTenants: Record<string, RuntimeTenant> = {};
+
+  async loadPlans(
+    callback: () => Promise<Record<string, TenantPlanInfo>>,
+  ): Promise<void> {
+    this.loadedPlans = await callback();
+  }
 
   async initInfrastructures(callback: () =>  void): Promise<void> {
     callback();
   }
 
-  async initModules(callback: (loadedModules: Record<string, Service>) => void): Promise<void> {
-    callback(this.loadedModules);
+  async initModules(
+    callback: () => Promise<Record<string, Service>>,
+  ): Promise<void> {
+    this.loadedModules = await callback();
   }
 
   async initDatabases(manager: EntityManager): Promise<void> {
@@ -49,9 +59,7 @@ export class TenantService {
 
   async precreateTenant(tenant: Tenant): Promise<RuntimeTenant> {
     const { activate, database } = tenant;
-    const { plan: tenantPlan } = tenant;
-
-    const plan = TenantPlanInfo.fromName(tenantPlan);
+    const { plan } = tenant;
     const { schemaName, modulesName } = plan;
     const modules = Object.assign(
       {},
@@ -90,12 +98,21 @@ export class TenantService {
     return isUndefined(tenantId) ? undefined : this.runtimeTenants[tenantId];
   }
 
+  getPlan(schemaName: string): TenantPlanInfo {
+    const plan = this.loadedPlans[schemaName];
+    if (plan === undefined) {
+      throw new Error(`Plan with given schemaName not exists: ${schemaName}`);
+    }
+    return plan;
+  }
+
   async new(dto: CreateTenantDTO): Promise<RuntimeTenant> {
     const ds = getSystemDataSource();
     const cb = async (m: EntityManager): Promise<RuntimeTenant> => {
       const {
-        name, orgName, activate, database: dbName, config, plan,
+        name, orgName, activate, database: dbName, config, plan: planString,
       } = dto;
+      const plan = this.getPlan(planString);
       const database = this.databases[dbName];
       const tenant = await TenantInfrastructure.getInstance().insert(
         m, name, orgName, activate, database, config, plan,

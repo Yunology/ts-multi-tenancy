@@ -6,7 +6,7 @@ import {
 import { BaseEntity } from './base.entry';
 import { Database } from './database.entry';
 import { Config } from './config';
-import { TenantPlan, TenantPlanColumn } from './tenant_plan';
+import { TenantPlanInfo, TenantPlanColumn } from './tenant_plan';
 
 @Entity({ name: 'tenant' })
 export class Tenant extends BaseEntity {
@@ -26,5 +26,5 @@ export class Tenant extends BaseEntity {
   config!: Config;
 
   @TenantPlanColumn()
-  plan!: TenantPlan;
+  plan!: TenantPlanInfo;
 }
