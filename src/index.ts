@@ -13,8 +13,6 @@ import { TenantPlanInfo } from './entry';
 let tenantService: TenantService;
 let loadedPlans: Record<string, TenantPlanInfo> = {};
 
-export * from './controller';
-export * from './middleware';
 export * from './dto';
 export * from './entry';
 export * from './infrastructure';
