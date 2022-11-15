@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - 'Release'
+      - 'Develop'
 jobs:
   build:
     name: Building
