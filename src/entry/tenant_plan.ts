@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/ban-types, no-underscore-dangle */
 import { Column, ColumnOptions } from 'typeorm';
 
-import { getTenantService } from '..';
+import { getPlan } from '..';
 import { Service } from '../service';
 
 export class TenantPlanInfo {
@@ -47,6 +47,6 @@ export const TenantPlanColumn: (options?: ColumnOptions) => PropertyDecorator = 
   type: 'varchar',
   transformer: {
     to: (value: TenantPlanInfo) => value.schemaName,
-    from: (value: string) => getTenantService().getPlan(value),
+    from: (value: string) => getPlan(value),
   },
 });

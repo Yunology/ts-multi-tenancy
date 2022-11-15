@@ -9,6 +9,7 @@ import {
 import { CreateTenantDTO, CreateDatabaseDTO } from '../dto';
 import { DatabaseInfrastructure, TenantInfrastructure } from '../infrastructure';
 import { createDataSource, getSystemDataSource } from '../datasource';
+import { getPlan } from '..';
 
 export class TenantService {
   private loadedPlans: Record<string, TenantPlanInfo> = {};
@@ -98,21 +99,13 @@ export class TenantService {
     return isUndefined(tenantId) ? undefined : this.runtimeTenants[tenantId];
   }
 
-  getPlan(schemaName: string): TenantPlanInfo {
-    const plan = this.loadedPlans[schemaName];
-    if (plan === undefined) {
-      throw new Error(`Plan with given schemaName not exists: ${schemaName}`);
-    }
-    return plan;
-  }
-
   async new(dto: CreateTenantDTO): Promise<RuntimeTenant> {
     const ds = getSystemDataSource();
     const cb = async (m: EntityManager): Promise<RuntimeTenant> => {
       const {
         name, orgName, activate, database: dbName, config, plan: planString,
       } = dto;
-      const plan = this.getPlan(planString);
+      const plan = getPlan(planString);
       const database = this.databases[dbName];
       const tenant = await TenantInfrastructure.getInstance().insert(
         m, name, orgName, activate, database, config, plan,

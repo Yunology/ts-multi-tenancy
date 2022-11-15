@@ -11,6 +11,7 @@ import {
 import { TenantPlanInfo } from './entry';
 
 let tenantService: TenantService;
+let loadedPlans: Record<string, TenantPlanInfo> = {};
 
 export * from './controller';
 export * from './middleware';
@@ -34,7 +35,7 @@ export async function initMultiTenancy(
   await systemDataSource.transaction('SERIALIZABLE', async (manager: EntityManager) => {
     await DatabaseInfrastructure.init();
     await TenantInfrastructure.init();
-    await tenantService.loadPlans(loadPlanCallback);
+    loadedPlans = await loadPlanCallback();
     await tenantService.initInfrastructures(initInfrastructureCallback);
     await tenantService.initModules(initModuleCallback);
     if (preCreateSystemDatasFunction !== undefined) {
@@ -51,4 +52,12 @@ export async function initMultiTenancy(
 
 export function getTenantService(): TenantService {
   return tenantService;
+}
+
+export function getPlan(schemaName: string): TenantPlanInfo {
+  const plan = loadedPlans[schemaName];
+  if (plan === undefined) {
+    throw new Error(`Plan with given schemaName not exists: ${schemaName}`);
+  }
+  return plan;
 }
