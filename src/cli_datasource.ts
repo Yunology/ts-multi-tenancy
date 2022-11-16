@@ -1,8 +1,8 @@
-// cli_datasource.ts
+// src/cli_datasource.ts
 import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
 
-import { createSystemDataSource } from './src';
+import { createSystemDataSource } from './datasource';
 
 config({ path: `.env.${process.env.ENV_NAME}` });
 
