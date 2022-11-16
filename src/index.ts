@@ -21,9 +21,9 @@ export * from './service';
 export * from './datasource';
 
 export function initPlans(
-  callback: (loadedPlans: Record<string, TenantPlanInfo>) => void,
+  callback: () => Record<string, TenantPlanInfo>,
 ): void {
-  callback(loadedPlans);
+  loadedPlans = callback();
   planLoadedFlag = true;
 }
 
