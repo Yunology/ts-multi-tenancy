@@ -14,10 +14,6 @@ export class TenantService {
   private databases: Record<string, Database> = {};
   private runtimeTenants: Record<string, RuntimeTenant> = {};
 
-  async initInfrastructures(callback: () =>  void): Promise<void> {
-    callback();
-  }
-
   async initModules(
     callback: () => Promise<Record<string, Service>>,
   ): Promise<void> {

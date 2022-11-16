@@ -11,6 +11,7 @@ import {
 import { TenantPlanInfo } from './entry';
 
 let planLoadedFlag = false;
+let infraLoadedFlag = false;
 let tenantService: TenantService;
 let loadedPlans: Record<string, TenantPlanInfo> = {};
 
@@ -27,14 +28,27 @@ export function initPlans(
   planLoadedFlag = true;
 }
 
+export async function initInfrastructures(
+  callback: () => Promise<void>,
+): Promise<void> {
+  if (infraLoadedFlag) {
+    throw new Error('Infras were loaded before.');
+  }
+  await DatabaseInfrastructure.init();
+  await TenantInfrastructure.init();
+  await callback();
+  infraLoadedFlag = true;
+}
+
 export async function initMultiTenancy(
-  initInfrastructureCallback: () =>  void,
   initModuleCallback: () => Promise<Record<string, Service>>,
   preCreateSystemDatasFunction?: (manager: EntityManager) => Promise<void>,
   preCreateTenantDatasFunction?: () => Promise<void>,
 ): Promise<void> {
   if (!planLoadedFlag || Object.values(loadedPlans).length === 0) {
     throw new Error(`Non of any plans loaded. please invoke initPlans first.`);
+  } else if (!infraLoadedFlag) {
+    throw new Error(`Non of any infras loaded. please invoke initInfrastructures first.`);
   }
 
   tenantService = new TenantService();
@@ -42,9 +56,6 @@ export async function initMultiTenancy(
   const sessionStore = await initSessionRedisStore();
   const systemDataSource = await getSystemDataSource().initialize();
   await systemDataSource.transaction('SERIALIZABLE', async (manager: EntityManager) => {
-    await DatabaseInfrastructure.init();
-    await TenantInfrastructure.init();
-    await tenantService.initInfrastructures(initInfrastructureCallback);
     await tenantService.initModules(initModuleCallback);
     if (preCreateSystemDatasFunction !== undefined) {
       await preCreateSystemDatasFunction(manager);
