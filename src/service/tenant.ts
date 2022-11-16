@@ -3,25 +3,16 @@ import { EntityManager } from 'typeorm';
 import { isUndefined, cloneDeep } from 'lodash';
 
 import { Service } from './service';
-import {
-  Tenant, TenantPlanInfo, RuntimeTenant, Database,
-} from '../entry';
+import { Tenant, RuntimeTenant, Database } from '../entry';
 import { CreateTenantDTO, CreateDatabaseDTO } from '../dto';
 import { DatabaseInfrastructure, TenantInfrastructure } from '../infrastructure';
 import { createDataSource, getSystemDataSource } from '../datasource';
 import { getPlan } from '..';
 
 export class TenantService {
-  private loadedPlans: Record<string, TenantPlanInfo> = {};
   private loadedModules: Record<string, Service> = {};
   private databases: Record<string, Database> = {};
   private runtimeTenants: Record<string, RuntimeTenant> = {};
-
-  async loadPlans(
-    callback: () => Promise<Record<string, TenantPlanInfo>>,
-  ): Promise<void> {
-    this.loadedPlans = await callback();
-  }
 
   async initInfrastructures(callback: () =>  void): Promise<void> {
     callback();
