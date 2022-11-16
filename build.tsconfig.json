@@ -5,7 +5,6 @@
   },
   "exclude": [
     "test",
-    "scripts",
-    "cli_datasource.ts"
+    "scripts"
   ]
 }
