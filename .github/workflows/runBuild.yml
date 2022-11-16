@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - 'Release'
-      - 'Develop'
 
 jobs:
   build:
@@ -13,13 +12,6 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Get commit sha
-        id: commit
-        uses: pr-mpt/actions-commit-hash@v2
-      - name: Get branch names
-        id: branch-names
-        uses: tj-actions/branch-names@v6
-
       - uses: actions/checkout@v3
       # Setup .npmrc file to publish to GitHub Packages
       - uses: actions/setup-node@v3
@@ -27,11 +19,6 @@ jobs:
           node-version: '16.x'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@yunology'
-      - name: Setup package.json
-        if: steps.branch-names.outputs.current_branch == 'Develop'
-        uses: jaywcjlove/github-action-package@main
-        with:
-          version: ${{ steps.commit.outputs.short }}
       - run: yarn
       - run: yarn build
       - run: yarn publish
