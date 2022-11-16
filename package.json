@@ -13,7 +13,7 @@
   "author": "Clooooode <jackey8616@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "postinstall": "npx husky install",
+    "postinstall": "sh ./scripts/postinstall.sh",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
     "typeorm:cli": "ts-node ./node_modules/typeorm/cli.js -d ./cli_datasource.ts",
