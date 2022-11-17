@@ -2,16 +2,19 @@
 import { DataSource } from 'typeorm';
 import { groupBy, isEmpty, isUndefined, omitBy } from 'lodash';
 
-import { Tenant } from './tenant.entry';
 import { Database } from './database.entry';
 import { TenantPlanInfo } from './tenant_plan';
 
 import { Service } from '../service';
-import { Permission } from '../entry';
+import { Permission, Config } from '../entry';
 import { getDataSource, createDataSource } from '../datasource';
 
 export class RuntimeTenant {
-  private tenant: Tenant;
+  private id: string;
+  private name: string;
+  private orgName: string;
+  private activate: boolean;
+  private config: Config;
   private plan: TenantPlanInfo;
   private dataSource!: DataSource;
   private modules: Record<string, Service>;
@@ -20,11 +23,19 @@ export class RuntimeTenant {
   };
 
   constructor(
-    tenant: Tenant,
+    id: string,
+    name: string,
+    orgName: string,
+    activate: boolean,
+    config: Config,
     plan: TenantPlanInfo,
     modules: Record<string, Service>,
   ) {
-    this.tenant = tenant;
+    this.id = id;
+    this.name = name;
+    this.orgName = orgName;
+    this.activate = activate;
+    this.config = config;
     this.plan = plan;
     this.modules = modules;
   }
@@ -57,19 +68,15 @@ export class RuntimeTenant {
     }
   }
 
-  get getTenant(): Tenant {
-    return this.tenant;
-  }
-
   get getConfig(): <T>(key: string, defaultValue?: T) => T{
     return <T>(key: string, defaultValue?: T): T => (
-      this.tenant.config[key] || defaultValue
+      this.config[key] || defaultValue
     );
   }
 
   get getRequireConfig(): <T>(key: string) => T {
     return <T>(key: string): T => {
-      const value = this.tenant.config[key];
+      const value = this.config[key];
       if (isUndefined(value)) {
         throw new Error(`Given config key: ${key} is require, but got undefined.`);
       }
@@ -78,7 +85,7 @@ export class RuntimeTenant {
   }
 
   get identityName(): string {
-    return `${this.tenant.orgName}-${this.tenant.name}`;
+    return `${this.orgName}-${this.name}`;
   }
 
   get ds(): DataSource {

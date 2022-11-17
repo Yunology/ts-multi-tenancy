@@ -46,7 +46,9 @@ export class TenantService {
   }
 
   async precreateTenant(tenant: Tenant): Promise<RuntimeTenant> {
-    const { activate, database } = tenant;
+    const {
+      id, name, orgName, activate, database, config,
+    } = tenant;
     const { plan } = tenant;
     const { schemaName, modulesName } = plan;
     const modules = Object.assign(
@@ -55,7 +57,9 @@ export class TenantService {
         [name]: cloneDeep(this.loadedModules[name]),
       })),
     );
-    const rt = new RuntimeTenant(tenant, plan, modules);
+    const rt = new RuntimeTenant(
+      id, name, orgName, activate, config, plan, modules,
+    );
     if (activate) {
       await rt.precreateSchema(database, schemaName);
       await rt.precreateDataSource(database);
