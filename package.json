@@ -16,7 +16,7 @@
     "postinstall": "sh ./scripts/postinstall.sh",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
-    "typeorm:cli": "ts-node ./node_modules/typeorm/cli.js -d ./cli_datasource.ts",
+    "typeorm:cli": "ts-node ./node_modules/typeorm/cli.js -d ./src/cli_datasource.ts",
     "clean": "sh ./scripts/clean.sh",
     "test": "bash ./scripts/test.sh",
     "build": "sh ./scripts/build.sh"
