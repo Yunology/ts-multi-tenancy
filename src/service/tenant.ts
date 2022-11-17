@@ -24,7 +24,7 @@ export class TenantService {
     const dbs = await manager.getRepository(Database).find();
     for (const db of dbs) {
       createDataSource(db.name, 'public', { url: db.url });
-      this.databases[db.name] = db;
+      this.databases[db.id] = db;
     }
   }
 
@@ -35,7 +35,7 @@ export class TenantService {
     });
     for (const tenant of tenants) {
       const runtimeTenant = await this.precreateTenant(tenant);
-      this.runtimeTenants[runtimeTenant.identityName] = runtimeTenant;
+      this.runtimeTenants[tenant.id] = runtimeTenant;
     }
   }
 
@@ -70,9 +70,9 @@ export class TenantService {
       const database = await DatabaseInfrastructure.getInstance().insert(
         m, dtoName, dtoUrl,
       );
-      const { name, url } = database;
+      const { id, name, url } = database;
       createDataSource(name, 'public', { url });
-      this.databases[name] = database;
+      this.databases[id] = database;
       return database;
     };
     return ds.manager.transaction('SERIALIZABLE', cb);
@@ -82,31 +82,38 @@ export class TenantService {
     return Object.values(this.databases);
   }
 
-  get(tenantId: string | undefined): RuntimeTenant | undefined {
-    return isUndefined(tenantId) ? undefined : this.runtimeTenants[tenantId];
+  get(tenantName: string | undefined): RuntimeTenant | undefined {
+    return isUndefined(tenantName)
+      ? undefined
+      : Object
+        .values(this.runtimeTenants)
+        .find(({ identityName }) => identityName === tenantName);
   }
 
   async new(dto: CreateTenantDTO): Promise<RuntimeTenant> {
     const ds = getSystemDataSource();
     const cb = async (m: EntityManager): Promise<RuntimeTenant> => {
       const {
-        name, orgName, activate, database: dbName, config, plan: planString,
+        name, orgName, activate, database: dbId, config, plan: planString,
       } = dto;
       const plan = getPlan(planString);
-      const database = this.databases[dbName];
+      const database = this.databases[dbId];
       const tenant = await TenantInfrastructure.getInstance().insert(
         m, name, orgName, activate, database, config, plan,
       );
       const runtimeTenant = await this.precreateTenant(tenant);
-      this.runtimeTenants[runtimeTenant.identityName] = runtimeTenant;
+      this.runtimeTenants[tenant.id] = runtimeTenant;
       return runtimeTenant;
     };
     return ds.manager.transaction('SERIALIZABLE', cb);
   }
 
   async listTenantries(): Promise<Array<Tenant>> {
-    return Object
-      .values(this.runtimeTenants)
-      .map(({ getTenant }) => getTenant);
+    const ds = getSystemDataSource();
+    const cb = async (
+      m: EntityManager,
+    ): Promise<Array<Tenant>> => TenantInfrastructure.getInstance()
+      .getTenantries(m);
+    return ds.manager.transaction('SERIALIZABLE', cb);
   }
 }
