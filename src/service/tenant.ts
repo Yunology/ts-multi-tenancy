@@ -1,5 +1,6 @@
 // src/service/tenant.ts
 import { EntityManager } from 'typeorm';
+import { Request } from 'express';
 import { isUndefined, cloneDeep } from 'lodash';
 
 import { Service } from './service';
@@ -10,9 +11,14 @@ import { createDataSource, getSystemDataSource } from '../datasource';
 import { getPlan } from '..';
 
 export class TenantService {
+  private headerName = 'X-TENANT-ID';
   private loadedModules: Record<string, Service> = {};
   private databases: Record<string, Database> = {};
   private runtimeTenants: Record<string, RuntimeTenant> = {};
+
+  constructor(headerName?: string) {
+    this.headerName = headerName || this.headerName;
+  }
 
   async initModules(
     callback: () => Promise<Record<string, Service>>,
@@ -120,5 +126,10 @@ export class TenantService {
     ): Promise<Array<Tenant>> => TenantInfrastructure.getInstance()
       .getTenantries(m);
     return ds.manager.transaction('SERIALIZABLE', cb);
+  }
+
+  getTenantByHeaderFromReqeust(req: Request): RuntimeTenant | undefined {
+    const tenantName = req.header(this.headerName);
+    return isUndefined(tenantName) ? undefined : this.get(tenantName);
   }
 }

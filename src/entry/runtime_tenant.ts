@@ -21,6 +21,7 @@ export class RuntimeTenant {
   private permissions: { [key: string]: Permission } = {
     ROOT: new Permission(0xFFFF, 'ROOT', '管理員權限'),
   };
+  private allowDomains: Array<string> = [];
 
   constructor(
     id: string,
@@ -68,7 +69,9 @@ export class RuntimeTenant {
     }
   }
 
-  async configInitlialize(): Promise<void> {}
+  async configInitlialize(): Promise<void> {
+    this.allowDomains = this.getConfig<Array<string>>('allowDomains', []);
+  }
 
   get getConfig(): <T>(key: string, defaultValue?: T) => T{
     return <T>(key: string, defaultValue?: T): T => (
@@ -100,6 +103,10 @@ export class RuntimeTenant {
 
   get getPermissions(): Array<Permission> {
     return Object.values(this.permissions);
+  }
+
+  get isAllowDomain(): (origin: string) => boolean {
+    return (origin: string) => this.allowDomains.includes(origin);
   }
 
   module<T extends Service>(t: (new (...args: any[]) => T) | string): T {
