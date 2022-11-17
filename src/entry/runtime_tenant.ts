@@ -68,6 +68,8 @@ export class RuntimeTenant {
     }
   }
 
+  async configInitlialize(): Promise<void> {}
+
   get getConfig(): <T>(key: string, defaultValue?: T) => T{
     return <T>(key: string, defaultValue?: T): T => (
       this.config[key] || defaultValue

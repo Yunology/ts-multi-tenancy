@@ -42,6 +42,7 @@ export class TenantService {
   async initlializeTenantries(): Promise<void> {
     for (const tenant of Object.values(this.runtimeTenants)) {
       await tenant.moduleInitlialize();
+      await tenant.configInitlialize();
     }
   }
 
