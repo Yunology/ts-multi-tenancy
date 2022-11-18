@@ -64,6 +64,16 @@ describe('RuntimeTenant Entry', () => {
     });
   });
 
+  describe('Method identityName', () => {
+    it('Should get given identityName', () => {
+      const rt = new RuntimeTenant(
+        'id-test', 'name', 'orgName', true, {},
+        new TenantPlanInfo('name', [], [], []), {},
+      );
+      expect(rt.identityName).to.be.eq('orgName-name');
+    });
+  });
+
   describe('Method isAllowDomain', () => {
     it('disallow with empty', async () => {
       const rt = new RuntimeTenant(
