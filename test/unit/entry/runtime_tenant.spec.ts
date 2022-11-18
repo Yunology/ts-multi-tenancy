@@ -42,6 +42,28 @@ describe('RuntimeTenant Entry', () => {
     });
   });
 
+  describe('Method getRequireConfig', () => {
+    it('Should raise error becuase its require config', () => {
+      const rt = new RuntimeTenant(
+        'id-test', 'name', 'orgName', true, {},
+        new TenantPlanInfo('name', [], [], []), {},
+      );
+      expect(() => rt.getRequireConfig('not-exists')).to.throw(
+        Error, 'Given config key: not-exists is require, but got undefined.',
+      );
+    });
+
+    it('Should return required config', () => {
+      const rt = new RuntimeTenant(
+        'id-test', 'name', 'orgName', true, {
+          'required-key': 'required value',
+        },
+        new TenantPlanInfo('name', [], [], []), {},
+      );
+      expect(rt.getRequireConfig('required-key')).to.be.eq('required value');
+    });
+  });
+
   describe('Method isAllowDomain', () => {
     it('disallow with empty', async () => {
       const rt = new RuntimeTenant(
