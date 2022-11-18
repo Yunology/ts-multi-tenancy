@@ -4,6 +4,44 @@ import { expect } from 'chai';
 import { Permission, RuntimeTenant, TenantPlanInfo } from '../../../src';
 
 describe('RuntimeTenant Entry', () => {
+  describe('Method getConfig', () => {
+    it('Should get not exists key value without default', () => {
+      const rt = new RuntimeTenant(
+        'id-test', 'name', 'orgName', true, {},
+        new TenantPlanInfo('name', [], [], []), {},
+      );
+      expect(rt.getConfig('not-exists-key')).to.be.undefined;
+    });
+
+    it('Should get not exists key value but return default', () => {
+      const rt = new RuntimeTenant(
+        'id-test', 'name', 'orgName', true, {},
+        new TenantPlanInfo('name', [], [], []), {},
+      );
+      expect(rt.getConfig('not-exists-key', 'default value')).to.be.eq('default value');
+    });
+
+    it('Should get exists key value without default', () => {
+      const rt = new RuntimeTenant(
+        'id-test', 'name', 'orgName', true, {
+          'something': 'a value',
+        },
+        new TenantPlanInfo('name', [], [], []), {},
+      );
+      expect(rt.getConfig('something')).to.be.eq('a value');
+    });
+
+    it('Should get exists key value with default', () => {
+      const rt = new RuntimeTenant(
+        'id-test', 'name', 'orgName', true, {
+          'something': 'b value',
+        },
+        new TenantPlanInfo('name', [], [], []), {},
+      );
+      expect(rt.getConfig('something', 'default a value')).to.be.eq('b value');
+    });
+  });
+
   describe('Method isAllowDomain', () => {
     it('disallow with empty', async () => {
       const rt = new RuntimeTenant(
