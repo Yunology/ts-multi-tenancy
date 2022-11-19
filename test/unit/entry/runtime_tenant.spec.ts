@@ -2,6 +2,7 @@
 import { expect } from 'chai';
 
 import { Permission, RuntimeTenant, TenantPlanInfo } from '../../../src';
+import { AModule } from '../../a_module';
 
 describe('RuntimeTenant Entry', () => {
   describe('Method getConfig', () => {
@@ -175,6 +176,30 @@ describe('RuntimeTenant Entry', () => {
       );
       await rt.configInitlialize();
       expect(rt.isAllowDomain('http://ccc.com')).to.be.false;
+    });
+  });
+
+  describe('Method module', () => {
+    it('Should raise error because given module name is not exists', () => {
+      const rt = new RuntimeTenant(
+        'id-test', 'name', 'orgName', true, {},
+        new TenantPlanInfo('name', [], [], []), {},
+      );
+      expect(() => rt.module(AModule)).to.throw(
+        Error,
+        'Such tenant not allow to use given module'
+        + ' or module is not exists: AModule',
+      );
+    });
+
+    it('Should get inserted module by class', () => {
+      const plan = new TenantPlanInfo('name', [], [], []);
+      const rt = new RuntimeTenant(
+        'id-test', 'name', 'orgName', true, {}, plan, {
+          [AModule.name]: new AModule(),
+        },
+      );
+      expect(rt.module(AModule)).not.to.be.undefined;
     });
   });
 
