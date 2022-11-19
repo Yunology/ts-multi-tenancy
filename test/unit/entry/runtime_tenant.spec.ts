@@ -199,7 +199,23 @@ describe('RuntimeTenant Entry', () => {
           [AModule.name]: new AModule(),
         },
       );
-      expect(rt.module(AModule)).not.to.be.undefined;
+      const module = rt.module(AModule);
+      expect(module).not.to.be.undefined;
+      expect(module.constructor.name).to.be.eq('AModule');
+    });
+
+    it('Should get inserted module by class name', () => {
+      const plan = new TenantPlanInfo('name', [], [], []);
+      const rt = new RuntimeTenant(
+        'id-test', 'name', 'orgName', true, {}, plan, {
+          [AModule.name]: new AModule(),
+        },
+      );
+      expect(rt.module('AModule')).not.to.be.undefined;
+
+      const module = rt.module(AModule);
+      expect(module).not.to.be.undefined;
+      expect(module.constructor.name).to.be.eq('AModule');
     });
   });
 
