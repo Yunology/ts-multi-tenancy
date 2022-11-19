@@ -74,6 +74,58 @@ describe('RuntimeTenant Entry', () => {
     });
   });
 
+  describe('Method getPermissionMap', () => {
+    it('Should return only root permission map', () => {
+      const rt = new RuntimeTenant(
+        'id-test', 'name', 'orgName', true, {},
+        new TenantPlanInfo('name', [], [], []), {},
+      );
+      const rootPer = rt.getPermissionMap['ROOT'];
+      expect(rootPer).not.to.be.undefined;
+      expect(rootPer.index).to.be.eq(0xFFFF);
+    });
+
+    it('Should return permision contains inserted', async () => {
+      const rt = new RuntimeTenant(
+        'id-test', 'name', 'orgName', true, {},
+        new TenantPlanInfo('name', [], [], []), {},
+      );
+      await rt.insertPermission({
+        'INSERTED': new Permission(0x1111, 'INSERTED'),
+      });
+      const insertedPer = rt.getPermissionMap['INSERTED'];
+      expect(insertedPer).not.to.be.undefined;
+      expect(insertedPer.index).to.be.eq(0x1111);
+      expect(insertedPer.name).to.be.eq('INSERTED');
+    });
+  });
+
+  describe('Method getPermissions', () => {
+    it('Should return only root permission', () => {
+      const rt = new RuntimeTenant(
+        'id-test', 'name', 'orgName', true, {},
+        new TenantPlanInfo('name', [], [], []), {},
+      );
+      const rootPer = rt.getPermissions.find(({ index }) => index === 0xFFFF);
+      expect(rootPer).not.to.be.undefined;
+      expect(rootPer!.index).to.be.eq(0xFFFF);
+    });
+
+    it('Should return permision contains inserted', async () => {
+      const rt = new RuntimeTenant(
+        'id-test', 'name', 'orgName', true, {},
+        new TenantPlanInfo('name', [], [], []), {},
+      );
+      await rt.insertPermission({
+        'INSERTED': new Permission(0x1111, 'INSERTED'),
+      });
+      const insertedPer = rt.getPermissions.find(({ name }) => name === 'INSERTED');
+      expect(insertedPer).not.to.be.undefined;
+      expect(insertedPer!.index).to.be.eq(0x1111);
+      expect(insertedPer!.name).to.be.eq('INSERTED');
+    });
+  });
+
   describe('Method isAllowDomain', () => {
     it('disallow with empty', async () => {
       const rt = new RuntimeTenant(
