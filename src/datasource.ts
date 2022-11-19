@@ -9,7 +9,9 @@ import connectRedis, { RedisStore } from 'connect-redis';
 
 // Tenant entitires & migrations
 import { Tenant, Database } from './entry';
-import { TenantInit1668658417786 } from './migration';
+import {
+  TenantInit1668658417786, BaseEntityIdField1668675504073,
+} from './migration';
 
 const RedisStore = connectRedis(session);
 
@@ -45,7 +47,7 @@ export function createSystemDataSource(
   return createDataSource('system', 'public', {
     url,
     entities: [Tenant, Database],
-    migrations: [TenantInit1668658417786],
+    migrations: [TenantInit1668658417786, BaseEntityIdField1668675504073],
     dropSchema,
     migrationsRun,
     logging,

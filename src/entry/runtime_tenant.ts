@@ -2,29 +2,41 @@
 import { DataSource } from 'typeorm';
 import { groupBy, isEmpty, isUndefined, omitBy } from 'lodash';
 
-import { Tenant } from './tenant.entry';
 import { Database } from './database.entry';
 import { TenantPlanInfo } from './tenant_plan';
 
 import { Service } from '../service';
-import { Permission } from '../entry';
+import { Permission, Config } from '../entry';
 import { getDataSource, createDataSource } from '../datasource';
 
 export class RuntimeTenant {
-  private tenant: Tenant;
+  private id: string;
+  private name: string;
+  private orgName: string;
+  private activate: boolean;
+  private config: Config;
   private plan: TenantPlanInfo;
   private dataSource!: DataSource;
   private modules: Record<string, Service>;
   private permissions: { [key: string]: Permission } = {
     ROOT: new Permission(0xFFFF, 'ROOT', '管理員權限'),
   };
+  private allowDomains: Array<string> = [];
 
   constructor(
-    tenant: Tenant,
+    id: string,
+    name: string,
+    orgName: string,
+    activate: boolean,
+    config: Config,
     plan: TenantPlanInfo,
     modules: Record<string, Service>,
   ) {
-    this.tenant = tenant;
+    this.id = id;
+    this.name = name;
+    this.orgName = orgName;
+    this.activate = activate;
+    this.config = config;
     this.plan = plan;
     this.modules = modules;
   }
@@ -57,19 +69,19 @@ export class RuntimeTenant {
     }
   }
 
-  get getTenant(): Tenant {
-    return this.tenant;
+  async configInitlialize(): Promise<void> {
+    this.allowDomains = this.getConfig<Array<string>>('allowDomains', []);
   }
 
   get getConfig(): <T>(key: string, defaultValue?: T) => T{
     return <T>(key: string, defaultValue?: T): T => (
-      this.tenant.config[key] || defaultValue
+      this.config[key] || defaultValue
     );
   }
 
   get getRequireConfig(): <T>(key: string) => T {
     return <T>(key: string): T => {
-      const value = this.tenant.config[key];
+      const value = this.config[key];
       if (isUndefined(value)) {
         throw new Error(`Given config key: ${key} is require, but got undefined.`);
       }
@@ -78,7 +90,7 @@ export class RuntimeTenant {
   }
 
   get identityName(): string {
-    return `${this.tenant.orgName}-${this.tenant.name}`;
+    return `${this.orgName}-${this.name}`;
   }
 
   get ds(): DataSource {
@@ -91,6 +103,10 @@ export class RuntimeTenant {
 
   get getPermissions(): Array<Permission> {
     return Object.values(this.permissions);
+  }
+
+  get isAllowDomain(): (origin: string) => boolean {
+    return (origin: string) => this.allowDomains.includes(origin);
   }
 
   module<T extends Service>(t: (new (...args: any[]) => T) | string): T {
@@ -142,8 +158,6 @@ export class RuntimeTenant {
     if (targetCategory !== testCategory) { return false; }
 
     const targetValue = targetInstance - targetCategory;
-    if (targetValue === 0x00FF) { return true; }
-    const testValue = testInstance - testCategory;
-    return targetValue === testValue;
+    return targetValue === 0x00FF;
   }
 }

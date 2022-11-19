@@ -1,7 +1,10 @@
 // src/entry/base.entry.ts
-import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 export abstract class BaseEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+
   @CreateDateColumn({
     type: 'timestamp without time zone',
     name: 'created_at',
