@@ -20,6 +20,10 @@ export class TenantService {
     this.headerName = headerName || this.headerName;
   }
 
+  get tenantHeaderName(): string {
+    return this.headerName;
+  }
+
   async initModules(
     callback: () => Promise<Record<string, Service>>,
   ): Promise<void> {

@@ -41,6 +41,7 @@ export async function initInfrastructures(
 }
 
 export async function initMultiTenancy(
+  tenantHaederName = 'X-TENANT-ID',
   initModuleCallback: () => Promise<Record<string, Service>>,
   preCreateSystemDatasFunction?: (manager: EntityManager) => Promise<void>,
   preCreateTenantDatasFunction?: () => Promise<void>,
@@ -51,7 +52,7 @@ export async function initMultiTenancy(
     throw new Error(`Non of any infras loaded. please invoke initInfrastructures first.`);
   }
 
-  tenantService = new TenantService();
+  tenantService = new TenantService(tenantHaederName);
   const redisDataSource = await initRedisDataSource();
   const sessionStore = await initSessionRedisStore();
   const systemDataSource = await getSystemDataSource().initialize();
