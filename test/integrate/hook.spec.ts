@@ -5,12 +5,27 @@ import chaiAsPromised from 'chai-as-promised';
 import { EntityManager, LoggerOptions } from 'typeorm';
 
 import {
-  createSystemDataSource, initInfrastructures, initMultiTenancy, initPlans,
-  TenantPlanInfo,
+  getSystemDataSource, createSystemDataSource, initInfrastructures, initPlans,
+  initMultiTenancy, TenantPlanInfo,
 } from 'index';
 
 chaiUse(chaiAsPromised);
 chaiShould();
+
+export async function autoRollbackTransaction(
+  runInTransaction: (manager: EntityManager) => Promise<void>,
+): Promise<void> {
+  const qr = getSystemDataSource().createQueryRunner();
+  await qr.connect();
+  await qr.startTransaction('SERIALIZABLE');
+
+  try {
+    await runInTransaction(qr.manager);
+  } finally {
+    await qr.rollbackTransaction();
+    await qr.release();
+  }
+}
 
 export const mochaHooks = {
   async beforeAll(): Promise<void> {
@@ -26,7 +41,7 @@ export const mochaHooks = {
     );
 
     initPlans(() => ({
-      'TEST-PLAN': new TenantPlanInfo('standard', [], [], []),
+      'TEST-PLAN': new TenantPlanInfo('TEST-PLAN', [], [], []),
     }));
     await initInfrastructures(async () => {});
     await initMultiTenancy(
