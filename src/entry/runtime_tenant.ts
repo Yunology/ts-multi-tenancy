@@ -158,8 +158,6 @@ export class RuntimeTenant {
     if (targetCategory !== testCategory) { return false; }
 
     const targetValue = targetInstance - targetCategory;
-    if (targetValue === 0x00FF) { return true; }
-    const testValue = testInstance - testCategory;
-    return targetValue === testValue;
+    return targetValue === 0x00FF;
   }
 }

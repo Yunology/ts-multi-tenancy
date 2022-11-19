@@ -237,4 +237,50 @@ describe('RuntimeTenant Entry', () => {
       })).eventually.rejectedWith(Error, 'Duplicate Permission: [A-1, DUP_A-1], [B-2, DUP_B-2]');
     });
   });
+
+  describe('Method isPermissionMatched', async () => {
+    const rt = new RuntimeTenant(
+      'id-test', 'name', 'orgName', true, {},
+      new TenantPlanInfo('name', [], [], []), {},
+    );
+    const catRootPer = new Permission(0x11FF, 'TO-TEST-ROOT');
+    const per = new Permission(0x1111, 'TO-TEST');
+    const notMatchPer = new Permission(0x2222, 'NOT-MATCH');
+    await rt.insertPermission({
+      'TO-TEST': per,
+      'TO-TEST-ROOT': catRootPer,
+    });
+
+    it('Should return true since we use root permission', () => {
+      expect(rt.isPermissionMatched(rt.getPermissionMap['ROOT'], per)).to.be.true;
+    });
+
+    it('Should return true since we use root permission index', () => {
+      expect(rt.isPermissionMatched(0xFFFF, per)).to.be.true;
+    });
+
+    it('Should return true since we use category permission', () => {
+      expect(rt.isPermissionMatched(catRootPer, per)).to.be.true;
+    });
+
+    it('Should return true since we use category permission index', () => {
+      expect(rt.isPermissionMatched(catRootPer.index, per)).to.be.true;
+    });
+
+    it('Should return true since we matched given permisson', () => {
+      expect(rt.isPermissionMatched(per, per)).to.be.true;
+    });
+
+    it('Should return true since we matched given permisson index', () => {
+      expect(rt.isPermissionMatched(per.index, per)).to.be.true;
+    });
+
+    it('Should return false since we are not matched given permisson', () => {
+      expect(rt.isPermissionMatched(notMatchPer, per)).to.be.false;
+    });
+
+    it('Should return false since we are not matched given permisson index', () => {
+      expect(rt.isPermissionMatched(notMatchPer.index, per)).to.be.false;
+    });
+  });
 });
