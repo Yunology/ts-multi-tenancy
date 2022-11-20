@@ -63,7 +63,7 @@ export abstract class Infrastructure<T extends ObjectLiteral> {
   protected async add(
     manager: EntityManager,
     entity: T,
-    condition?: FindOptionsWhere<T>,
+    condition: FindOptionsWhere<T>,
     options?: SaveOptions,
   ): Promise<T> {
     if (condition !== undefined && await this.repo(manager).countBy(condition) !== 0) {
@@ -101,7 +101,7 @@ export abstract class InfrastructureModifiable<T extends ObjectLiteral> extends 
       throw new Error('Such entitiy not exists.');
     }
     return this.repo(manager).save({
-      ...(findCondition.where ? findCondition.where : findCondition),
+      ...findCondition,
       ...findEntity,
       ...omitBy(entity, isUndefined),
     }, options);
