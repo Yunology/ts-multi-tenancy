@@ -1,7 +1,8 @@
 // test/unit/entry/runtime_tenant.spec.ts
 import { expect } from 'chai';
 
-import { Permission, RuntimeTenant, TenantPlanInfo } from '../../../src';
+import { Permission, RuntimeTenant, TenantPlanInfo } from 'index';
+
 import { AModule } from '../../a_module';
 
 describe('RuntimeTenant Entry', () => {
