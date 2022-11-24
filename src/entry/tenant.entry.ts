@@ -3,7 +3,7 @@ import {
   Column, Entity, PrimaryColumn, ManyToOne,
 } from 'typeorm';
 
-import { BaseEntity } from './base.entry';
+import { BaseEntity } from './base_entity';
 import { Database } from './database.entry';
 import { Config } from './config';
 import { TenantPlanInfo, TenantPlanColumn } from './tenant_plan';
