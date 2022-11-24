@@ -45,9 +45,11 @@ export const mochaHooks = {
     }));
     await initInfrastructures(async () => {});
     await initMultiTenancy(
-      'X-TEST-TENANT-HEADER',
       async () => ({}),
       async (manager: EntityManager) => {},
+      undefined,
+      'X-TEST-TENANT-HEADER',
+      DB_LOGGING,
     );
   },
 };
