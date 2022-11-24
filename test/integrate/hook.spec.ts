@@ -49,7 +49,7 @@ export const mochaHooks = {
       async (manager: EntityManager) => {},
       undefined,
       'X-TEST-TENANT-HEADER',
-      DB_LOGGING,
+      DB_LOGGING as LoggerOptions,
     );
   },
 };

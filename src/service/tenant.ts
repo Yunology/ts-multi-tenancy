@@ -15,11 +15,11 @@ export class TenantService {
   private loadedModules: Record<string, Service> = {};
   private databases: Record<string, Database> = {};
   private runtimeTenants: Record<string, RuntimeTenant> = {};
-  private dbLogging: LoggerOptions;
+  private dbLogging: LoggerOptions | undefined;
 
   constructor(headerName?: string, dbLogging?: LoggerOptions) {
     this.headerName = headerName || this.headerName;
-    this.dbLogging = dbLogging || ["error", "warn"];
+    this.dbLogging = dbLogging;
   }
 
   get tenantHeaderName(): string {
@@ -77,8 +77,8 @@ export class TenantService {
       id, name, orgName, activate, config, plan, modules,
     );
     if (activate) {
-      await rt.precreateSchema(database, schemaName);
-      await rt.precreateDataSource(database);
+      await rt.precreateSchema(database, schemaName, this.dbLogging);
+      await rt.precreateDataSource(database, this.dbLogging);
     }
     return rt;
   }
@@ -91,7 +91,7 @@ export class TenantService {
         m, dtoName, dtoUrl,
       );
       const { id, name, url } = database;
-      createDataSource(name, 'public', { url });
+      createDataSource(name, 'public', { url, logging: this.dbLogging });
       this.databases[id] = database;
       return database;
     };
