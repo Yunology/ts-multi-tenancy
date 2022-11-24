@@ -25,10 +25,6 @@ export class TenantInfrastructure extends InfrastructureManyModifiable<Tenant> {
     super(Tenant);
   }
 
-  getManyByIds(manager: EntityManager, ids: Array<number>): Promise<Array<Tenant>> {
-    throw new Error('Tenant can not get by ids.');
-  }
-
   public async getTenantries(manager: EntityManager): Promise<Array<Tenant>> {
     return this.getMany(manager, {}, {
       relations: { database: true },

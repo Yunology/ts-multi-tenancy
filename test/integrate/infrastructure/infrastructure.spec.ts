@@ -11,10 +11,6 @@ class TestDatabaseInfrastructure extends InfrastructureManyModifiable<Database> 
     super(Database);
   }
 
-  getManyByIds(manager: EntityManager, ids: number[]): Promise<Database[]> {
-    throw new Error('Method not implemented.');
-  }
-
   getOrNull(
     manager: EntityManager,
     condition: FindOptionsWhere<Database>,

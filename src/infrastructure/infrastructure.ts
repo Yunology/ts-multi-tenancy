@@ -121,7 +121,7 @@ export abstract class InfrastructureModifiable<T extends ObjectLiteral> extends 
 
 /**
  * InfrastructureManyModifiable base on InfrastructureModifiable,
- * add getMany and getManyByIds method to interact with multiple entries.
+ * add getMany method to interact with multiple entries.
  *
  * @see Infrastructure<T> only get and add function.
  * @see InfrastrcutureModifiable<T> CRUD function.
