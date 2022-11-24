@@ -1,5 +1,5 @@
 // src/service/tenant.ts
-import { EntityManager } from 'typeorm';
+import { EntityManager, LoggerOptions } from 'typeorm';
 import { Request } from 'express';
 import { isUndefined, cloneDeep } from 'lodash';
 
@@ -15,9 +15,11 @@ export class TenantService {
   private loadedModules: Record<string, Service> = {};
   private databases: Record<string, Database> = {};
   private runtimeTenants: Record<string, RuntimeTenant> = {};
+  private dbLogging: LoggerOptions;
 
-  constructor(headerName?: string) {
+  constructor(headerName?: string, dbLogging?: LoggerOptions) {
     this.headerName = headerName || this.headerName;
+    this.dbLogging = dbLogging || ["error", "warn"];
   }
 
   get tenantHeaderName(): string {
@@ -33,7 +35,10 @@ export class TenantService {
   async initDatabases(manager: EntityManager): Promise<void> {
     const dbs = await manager.getRepository(Database).find();
     for (const db of dbs) {
-      createDataSource(db.name, 'public', { url: db.url });
+      createDataSource(db.name, 'public', {
+        url: db.url,
+        logging: this.dbLogging,
+      });
       this.databases[db.id] = db;
     }
   }
