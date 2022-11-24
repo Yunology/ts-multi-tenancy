@@ -139,6 +139,4 @@ export abstract class InfrastructureManyModifiable<T extends ObjectLiteral>
   ): Promise<Array<T>> {
     return this.repo(manager).find({ ...options, where: condition });
   }
-
-  abstract getManyByIds(manager: EntityManager, ids: Array<number>): Promise<Array<T>>;
 }
