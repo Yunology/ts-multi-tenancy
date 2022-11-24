@@ -132,6 +132,12 @@ export class TenantService {
     return ds.manager.transaction('SERIALIZABLE', cb);
   }
 
+  async getTenant(id: string): Promise<Tenant> {
+    const ds = getSystemDataSource();
+    const cb = async (m: EntityManager): Promise<Tenant> => TenantInfrastructure.getInstance().getById(m, id);
+    return ds.manager.transaction('SERIALIZABLE', cb);
+  }
+
   getTenantByHeaderFromReqeust(req: Request): RuntimeTenant | undefined {
     const tenantName = req.header(this.headerName);
     return isUndefined(tenantName) ? undefined : this.get(tenantName);

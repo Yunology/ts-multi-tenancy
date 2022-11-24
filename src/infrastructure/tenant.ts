@@ -25,6 +25,10 @@ export class TenantInfrastructure extends InfrastructureManyModifiable<Tenant> {
     super(Tenant);
   }
 
+  public async getById(manager: EntityManager, id: string): Promise<Tenant> {
+    return this.get(manager, { id });
+  }
+
   public async getTenantries(manager: EntityManager): Promise<Array<Tenant>> {
     return this.getMany(manager, {}, {
       relations: { database: true },
