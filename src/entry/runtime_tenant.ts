@@ -89,6 +89,10 @@ export class RuntimeTenant {
     };
   }
 
+  get tenantId(): string {
+    return this.id;
+  }
+
   get identityName(): string {
     return `${this.orgName}-${this.name}`;
   }
