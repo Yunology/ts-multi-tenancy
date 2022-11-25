@@ -11,10 +11,6 @@ class TestDatabaseInfrastructure extends InfrastructureManyModifiable<Database> 
     super(Database);
   }
 
-  getManyByIds(manager: EntityManager, ids: number[]): Promise<Database[]> {
-    throw new Error('Method not implemented.');
-  }
-
   getOrNull(
     manager: EntityManager,
     condition: FindOptionsWhere<Database>,
@@ -181,6 +177,7 @@ describe('Infrastructure base class', () => {
           { name: 'another-name', url: 'another-url' } as Database,
         );
         expect(updated).not.to.be.undefined;
+        expect((updated as any).where).to.be.undefined;
         expect(updated.name).to.be.eq('another-name');
         expect(updated.url).to.be.eq('another-url');
       });

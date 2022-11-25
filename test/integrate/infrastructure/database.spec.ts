@@ -7,16 +7,6 @@ import { DatabaseInfrastructure, Database } from 'index';
 import { autoRollbackTransaction } from '../hook.spec';
 
 describe('Database Infrastructure', () => {
-  describe('Method getManyByIds', () => {
-    it('Should raise error because this class is not support', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
-        expect(() => DatabaseInfrastructure.getInstance().getManyByIds(
-          manager, [],
-        )).to.throw(Error, 'Database can not get by ids.');
-      });
-    });
-  });
-
   describe('Method getDatabases', () => {
     it('Should get empty because there is nothing in db', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {

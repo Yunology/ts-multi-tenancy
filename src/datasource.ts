@@ -30,6 +30,7 @@ export function createDataSource(
   }
 
   const ds = new DataSource({
+    logging: ['error', 'warn'],
     ...options,
     type: 'postgres',
     schema,
@@ -42,7 +43,7 @@ export function createSystemDataSource(
   url: string,
   dropSchema = false,
   migrationsRun = false,
-  logging: LoggerOptions = false,
+  logging?: LoggerOptions,
 ): DataSource {
   return createDataSource('system', 'public', {
     url,

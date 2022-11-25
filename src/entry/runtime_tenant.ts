@@ -1,5 +1,5 @@
 // src/entry/runtime_tenant.ts
-import { DataSource } from 'typeorm';
+import { DataSource, LoggerOptions } from 'typeorm';
 import { groupBy, isEmpty, isUndefined, omitBy } from 'lodash';
 
 import { Database } from './database.entry';
@@ -41,10 +41,12 @@ export class RuntimeTenant {
     this.modules = modules;
   }
 
-  async precreateSchema({ name, url }: Database, schema: string): Promise<void> {
+  async precreateSchema(
+    { name, url }: Database, schema: string, logging?: LoggerOptions,
+  ): Promise<void> {
     let systemDb: DataSource | undefined = getDataSource(name);
     if (systemDb === undefined) {
-      systemDb = createDataSource(name, 'public', { url });
+      systemDb = createDataSource(name, 'public', { url, logging });
     }
 
     if (!systemDb.isInitialized) { await systemDb.initialize(); }
@@ -52,13 +54,16 @@ export class RuntimeTenant {
     await systemDb.destroy();
   }
 
-  async precreateDataSource({ name, url }: Database): Promise<void> {
+  async precreateDataSource(
+    { name, url }: Database, logging?: LoggerOptions,
+  ): Promise<void> {
     const { schemaName, entries, migrations } = this.plan;
 
     this.dataSource = createDataSource(name, schemaName, {
       url,
       entities: entries,
       migrations,
+      logging,
     });
     if (!this.dataSource.isInitialized) { await this.dataSource.initialize(); }
   }
@@ -87,6 +92,10 @@ export class RuntimeTenant {
       }
       return value as T;
     };
+  }
+
+  get tenantId(): string {
+    return this.id;
   }
 
   get identityName(): string {

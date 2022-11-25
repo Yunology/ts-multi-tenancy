@@ -1,5 +1,5 @@
 // src/service/tenant.ts
-import { EntityManager } from 'typeorm';
+import { EntityManager, LoggerOptions } from 'typeorm';
 import { Request } from 'express';
 import { isUndefined, cloneDeep } from 'lodash';
 
@@ -15,9 +15,11 @@ export class TenantService {
   private loadedModules: Record<string, Service> = {};
   private databases: Record<string, Database> = {};
   private runtimeTenants: Record<string, RuntimeTenant> = {};
+  private dbLogging: LoggerOptions | undefined;
 
-  constructor(headerName?: string) {
+  constructor(headerName?: string, dbLogging?: LoggerOptions) {
     this.headerName = headerName || this.headerName;
+    this.dbLogging = dbLogging;
   }
 
   get tenantHeaderName(): string {
@@ -33,7 +35,10 @@ export class TenantService {
   async initDatabases(manager: EntityManager): Promise<void> {
     const dbs = await manager.getRepository(Database).find();
     for (const db of dbs) {
-      createDataSource(db.name, 'public', { url: db.url });
+      createDataSource(db.name, 'public', {
+        url: db.url,
+        logging: this.dbLogging,
+      });
       this.databases[db.id] = db;
     }
   }
@@ -72,8 +77,8 @@ export class TenantService {
       id, name, orgName, activate, config, plan, modules,
     );
     if (activate) {
-      await rt.precreateSchema(database, schemaName);
-      await rt.precreateDataSource(database);
+      await rt.precreateSchema(database, schemaName, this.dbLogging);
+      await rt.precreateDataSource(database, this.dbLogging);
     }
     return rt;
   }
@@ -86,7 +91,7 @@ export class TenantService {
         m, dtoName, dtoUrl,
       );
       const { id, name, url } = database;
-      createDataSource(name, 'public', { url });
+      createDataSource(name, 'public', { url, logging: this.dbLogging });
       this.databases[id] = database;
       return database;
     };
@@ -129,6 +134,12 @@ export class TenantService {
       m: EntityManager,
     ): Promise<Array<Tenant>> => TenantInfrastructure.getInstance()
       .getTenantries(m);
+    return ds.manager.transaction('SERIALIZABLE', cb);
+  }
+
+  async getTenant(id: string): Promise<Tenant> {
+    const ds = getSystemDataSource();
+    const cb = async (m: EntityManager): Promise<Tenant> => TenantInfrastructure.getInstance().getById(m, id);
     return ds.manager.transaction('SERIALIZABLE', cb);
   }
 

@@ -23,10 +23,6 @@ export class DatabaseInfrastructure extends InfrastructureManyModifiable<Databas
     super(Database);
   }
 
-  getManyByIds(manager: EntityManager, ids: number[]): Promise<Array<Database>> {
-    throw new Error('Database can not get by ids.');
-  }
-
   public async getDatabases(manager: EntityManager): Promise<Array<Database>> {
     return this.getMany(manager, {});
   }

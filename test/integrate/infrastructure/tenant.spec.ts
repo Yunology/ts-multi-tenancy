@@ -3,22 +3,12 @@ import { expect } from 'chai';
 import { EntityManager } from 'typeorm';
 
 import {
-  Database, getPlan, getSystemDataSource, Tenant, TenantInfrastructure,
+  Database, getPlan, Tenant, TenantInfrastructure,
 } from 'index';
 
 import { autoRollbackTransaction } from '../hook.spec';
 
 describe('Tenant Infrastructure', () => {
-  describe('Method getManyByIds', () => {
-    it('Should raise error because this class is not support', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
-        expect(() => TenantInfrastructure.getInstance().getManyByIds(
-          manager, [],
-        )).to.throw(Error, 'Tenant can not get by ids.');
-      });
-    });
-  });
-
   describe('Method getTenants', () => {
     it('Should get empty because there is nothing in db', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
