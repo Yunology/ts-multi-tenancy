@@ -1,12 +1,13 @@
 // src/helper/permission.ts
-import { Permission, RuntimeTenant } from 'index';
+import { Permission } from '../entry';
+import { Service } from '../service';
 
 let permissionValidateFunctionLoadedFlag = false;
 let permissionValidateFunction: Function = () => true;
 
 export function registerPermissionValidateFunction(
   validateFunction: (
-    tenant: RuntimeTenant, ...args: unknown[]
+    service: Service, permission: Permission, ...args: unknown[]
   ) => Promise<boolean>,
 ): void {
   if (permissionValidateFunctionLoadedFlag === true) {
@@ -44,7 +45,7 @@ export function PermissionRequire(permission: Permission) {
           'Non of any permissionValidateFunction registered,'
           + 'default will pass everything.');
       }
-      const result = await permissionValidateFunction(args, permission);
+      const result = await permissionValidateFunction(this, permission, ...args);
       if (!result) {
         throw new Error('No permission.');
       }
