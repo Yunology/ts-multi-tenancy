@@ -1,6 +1,6 @@
 {
   "name": "@yunology/multi-tenancy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -16,12 +16,13 @@
     "postinstall": "sh ./scripts/postinstall.sh",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
-    "typeorm:cli": "ts-node ./node_modules/typeorm/cli.js -d ./cli_datasource.ts",
+    "typeorm:cli": "ts-node ./node_modules/typeorm/cli.js -d ./src/cli_datasource.ts",
     "clean": "sh ./scripts/clean.sh",
     "test": "bash ./scripts/test.sh",
     "build": "sh ./scripts/build.sh"
   },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/chai": "^4.3.4",
     "@types/chai-as-promised": "^7.1.5",
     "@types/connect-redis": "^0.0.19",

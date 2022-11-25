@@ -63,7 +63,7 @@ export abstract class Infrastructure<T extends ObjectLiteral> {
   protected async add(
     manager: EntityManager,
     entity: T,
-    condition?: FindOptionsWhere<T>,
+    condition: FindOptionsWhere<T>,
     options?: SaveOptions,
   ): Promise<T> {
     if (condition !== undefined && await this.repo(manager).countBy(condition) !== 0) {
@@ -94,14 +94,14 @@ export abstract class InfrastructureModifiable<T extends ObjectLiteral> extends 
     options?: SaveOptions,
   ): Promise<T> {
     const findCondition = FindOptionsUtils.isFindOneOptions(condition)
-      ? condition : { where: condition };
+      ? condition.where! : condition;
     // TODO: https://github.com/typeorm/typeorm/issues/3490  TypeORM sucks!
-    const findEntity: T | null = await this.repo(manager).findOne(findCondition);
+    const findEntity: T | null = await this.repo(manager).findOneBy(findCondition);
     if (findEntity === null) {
       throw new Error('Such entitiy not exists.');
     }
     return this.repo(manager).save({
-      ...(findCondition.where ? findCondition.where : findCondition),
+      ...findCondition,
       ...findEntity,
       ...omitBy(entity, isUndefined),
     }, options);
@@ -121,7 +121,7 @@ export abstract class InfrastructureModifiable<T extends ObjectLiteral> extends 
 
 /**
  * InfrastructureManyModifiable base on InfrastructureModifiable,
- * add getMany and getManyByIds method to interact with multiple entries.
+ * add getMany method to interact with multiple entries.
  *
  * @see Infrastructure<T> only get and add function.
  * @see InfrastrcutureModifiable<T> CRUD function.
@@ -139,6 +139,4 @@ export abstract class InfrastructureManyModifiable<T extends ObjectLiteral>
   ): Promise<Array<T>> {
     return this.repo(manager).find({ ...options, where: condition });
   }
-
-  abstract getManyByIds(manager: EntityManager, ids: Array<number>): Promise<Array<T>>;
 }

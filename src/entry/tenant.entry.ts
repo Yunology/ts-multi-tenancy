@@ -3,12 +3,12 @@ import {
   Column, Entity, PrimaryColumn, ManyToOne,
 } from 'typeorm';
 
-import { BaseEntity } from './base.entry';
+import { BaseEntity } from './base_entity';
 import { Database } from './database.entry';
 import { Config } from './config';
 import { TenantPlanInfo, TenantPlanColumn } from './tenant_plan';
 
-@Entity({ name: 'tenant' })
+@Entity({ name: 'tenant', schema: 'public' })
 export class Tenant extends BaseEntity {
   @PrimaryColumn({ type: 'varchar' })
   name!: string;
