@@ -17,8 +17,10 @@ let loadedPlans: Record<string, TenantPlanInfo> = {};
 
 export * from './dto';
 export * from './entry';
+export * from './helper';
 export * from './infrastructure';
 export * from './service';
+
 export * from './datasource';
 
 export function initPlans(
