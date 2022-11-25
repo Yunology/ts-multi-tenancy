@@ -94,9 +94,9 @@ export abstract class InfrastructureModifiable<T extends ObjectLiteral> extends 
     options?: SaveOptions,
   ): Promise<T> {
     const findCondition = FindOptionsUtils.isFindOneOptions(condition)
-      ? condition : { where: condition };
+      ? condition.where! : condition;
     // TODO: https://github.com/typeorm/typeorm/issues/3490  TypeORM sucks!
-    const findEntity: T | null = await this.repo(manager).findOne(findCondition);
+    const findEntity: T | null = await this.repo(manager).findOneBy(findCondition);
     if (findEntity === null) {
       throw new Error('Such entitiy not exists.');
     }

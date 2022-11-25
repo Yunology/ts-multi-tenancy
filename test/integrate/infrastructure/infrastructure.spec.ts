@@ -177,6 +177,7 @@ describe('Infrastructure base class', () => {
           { name: 'another-name', url: 'another-url' } as Database,
         );
         expect(updated).not.to.be.undefined;
+        expect((updated as any).where).to.be.undefined;
         expect(updated.name).to.be.eq('another-name');
         expect(updated.url).to.be.eq('another-url');
       });
