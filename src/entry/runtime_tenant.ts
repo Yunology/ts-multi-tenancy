@@ -5,6 +5,7 @@ import { groupBy, isEmpty, isUndefined, omitBy } from 'lodash';
 import { Service } from '../service';
 import { Permission, Config } from '../entry';
 import { getDataSource, createDataSource } from '../datasource';
+import { TenantError } from '../error';
 
 import { Database } from './database.entry';
 import { TenantPlanInfo } from './tenant_plan';
@@ -88,7 +89,7 @@ export class RuntimeTenant {
     return <T>(key: string): T => {
       const value = this.config[key];
       if (isUndefined(value)) {
-        throw new Error(`Given config key: ${key} is require, but got undefined.`);
+        throw new TenantError(this, `Given config key: ${key} is require, but got undefined.`);
       }
       return value as T;
     };
@@ -122,7 +123,8 @@ export class RuntimeTenant {
     const name = typeof t === 'string' ? t : t.name;
     const found = this.modules[name];
     if (isUndefined(found)) {
-      throw new Error(
+      throw new TenantError(
+        this,
         'Such tenant not allow to use given module'
         + ` or module is not exists: ${name}`,
       );
@@ -144,9 +146,12 @@ export class RuntimeTenant {
     };
     const duplicates = this.examinePermissionDuplicate();
     if (!isEmpty(duplicates)) {
-      throw new Error(`Duplicate Permission: ${Object.values(duplicates)
-        .map((each) => `[${each.map(({ name, index }) => `${name}-${index}`).join(', ')}]`)
-        .join(', ')}`);
+      throw new TenantError(
+        this,
+        `Duplicate Permission: ${Object.values(duplicates)
+          .map((each) => `[${each.map(({ name, index }) => `${name}-${index}`).join(', ')}]`)
+          .join(', ')}`,
+        );
     }
   }
 

@@ -1,19 +1,25 @@
 // src/helper/permission.ts
-import { Permission } from '../entry';
 import { Service } from '../service';
+import { Permission, RuntimeTenant } from '../entry';
+import { TenantError } from '../error';
+import { logger } from '../log';
 
 let permissionValidateFunctionLoadedFlag = false;
-let permissionValidateFunction = (
+let permissionValidateFunction: (
   service: Service, permission: Permission, ...args: unknown[]
-) => Promise.resolve(true);
+) => Promise<{
+  tenant: RuntimeTenant; result: boolean;
+}>;
 
 export function registerPermissionValidateFunction(
   validateFunction: (
     service: Service, permission: Permission, ...args: unknown[]
-  ) => Promise<boolean>,
+  ) => Promise<{
+    tenant: RuntimeTenant; result: boolean;
+  }>,
 ): void {
-  if (permissionValidateFunctionLoadedFlag === true) {
-    console.log('Duplicate register may cause override.');
+  if (permissionValidateFunctionLoadedFlag) {
+    logger.warn('Duplicate register may cause override.');
   }
   permissionValidateFunctionLoadedFlag = true;
   permissionValidateFunction = validateFunction;
@@ -42,18 +48,18 @@ export function PermissionRequire(permission: Permission) {
 
     // eslint-disable-next-line no-param-reassign
     descriptor.value = async function _(...args: unknown[]) {
-      if (permissionValidateFunctionLoadedFlag === false) {
-        throw new Error(
+      if (permissionValidateFunctionLoadedFlag) {
+        const { tenant, result} = await permissionValidateFunction(
+          this as Service, permission, ...args,
+        );
+        if (!result) {
+          throw new TenantError(tenant, 'No permission.');
+        }
+      } else {
+        logger.warn(
           'Non of any permissionValidateFunction registered,'
           + 'default will pass everything.');
       }
-      const result = await permissionValidateFunction(
-        this as Service, permission, ...args,
-      );
-      if (!result) {
-        throw new Error('No permission.');
-      }
-
       return originalMethod.call(this, ...args);
     };
 

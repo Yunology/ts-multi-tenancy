@@ -1,5 +1,5 @@
 // src/error.ts
-import { RuntimeTenant } from 'index';
+import { RuntimeTenant } from './entry';
 
 export class TenantError extends Error {
   private readonly runtimeTenant: RuntimeTenant;
