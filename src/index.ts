@@ -20,6 +20,7 @@ export * from './entry';
 export * from './helper';
 export * from './infrastructure';
 export * from './service';
+export * from './error';
 
 export * from './datasource';
 
