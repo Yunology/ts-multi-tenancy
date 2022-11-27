@@ -50,6 +50,8 @@ export class TenantService {
     });
     for (const tenant of tenants) {
       const runtimeTenant = await this.precreateTenant(tenant);
+      await runtimeTenant.moduleInitlialize();
+      await runtimeTenant.configInitlialize();
       this.runtimeTenants[tenant.id] = runtimeTenant;
     }
   }
