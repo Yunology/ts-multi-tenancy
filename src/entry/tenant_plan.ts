@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/ban-types, no-underscore-dangle */
 import { Column, ColumnOptions } from 'typeorm';
 
-import { getPlan } from '..';
-import { Service } from '../service';
+import { Service } from 'service';
+import { getPlan } from 'index';
 
 export class TenantPlanInfo {
   private readonly _schemaName: string;

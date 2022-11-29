@@ -1,8 +1,9 @@
 // src/infrastructure/database.ts
 import { EntityManager } from 'typeorm';
 
+import { Database } from 'entry';
+
 import { InfrastructureManyModifiable } from './infrastructure';
-import { Database } from '../entry';
 
 export class DatabaseInfrastructure extends InfrastructureManyModifiable<Database> {
   private static INSTANCE: DatabaseInfrastructure;

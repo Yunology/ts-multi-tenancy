@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { isUndefined, omitBy } from 'lodash';
 
-import { DeleteResultDTO, filterDeleteResult } from '../dto';
+import { DeleteResultDTO, filterDeleteResult } from 'dto';
 
 /**
  * Basic Infrastructure

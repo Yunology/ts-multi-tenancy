@@ -1,10 +1,11 @@
 // src/infrastructure/tenant.ts
 import { EntityManager } from 'typeorm';
 
-import { InfrastructureManyModifiable } from './infrastructure';
 import {
   Tenant, Config, Database, TenantPlanInfo,
-} from '../entry';
+} from 'entry';
+
+import { InfrastructureManyModifiable } from './infrastructure';
 
 export class TenantInfrastructure extends InfrastructureManyModifiable<Tenant> {
   private static INSTANCE: TenantInfrastructure;

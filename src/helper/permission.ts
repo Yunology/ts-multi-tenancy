@@ -1,6 +1,6 @@
 // src/helper/permission.ts
-import { Permission } from '../entry';
-import { Service } from '../service';
+import { Permission } from 'entry';
+import { Service } from 'service';
 
 let permissionValidateFunctionLoadedFlag = false;
 let permissionValidateFunction: Function = () => true;
