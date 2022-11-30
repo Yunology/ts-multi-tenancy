@@ -2,7 +2,9 @@
 import { Service } from 'service';
 
 let signInValidateFunctionLoadedFlag = false;
-let signInValidateFunction: Function = () => true;
+let signInValidateFunction = (
+  service: Service, ...args: unknown[]
+) => Promise.resolve(true);
 
 export function registerSignInValidateFunction(
   validateFunction: (service: Service, ...args: unknown[]) => Promise<boolean>,
@@ -29,7 +31,7 @@ export function SignInRequire() {
           'Non of any signInValidateFunction registered,'
           + 'default will pass everything.');
       }
-      const result = await signInValidateFunction(this, ...args);
+      const result = await signInValidateFunction(this as Service, ...args);
       if (!result) {
         throw new Error('Please login first.');
       }
