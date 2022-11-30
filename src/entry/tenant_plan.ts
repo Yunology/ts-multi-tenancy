@@ -3,7 +3,7 @@
 import { Column, ColumnOptions } from 'typeorm';
 
 import { Service } from '../service';
-import { getPlan } from '../index';
+import { getPlan } from '..';
 
 export class TenantPlanInfo {
   private readonly _schemaName: string;
