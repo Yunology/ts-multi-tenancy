@@ -2,9 +2,9 @@
 import { DataSource, LoggerOptions } from 'typeorm';
 import { groupBy, isEmpty, isUndefined, omitBy } from 'lodash';
 
-import { Service } from 'service';
-import { Permission, Config } from 'entry';
-import { getDataSource, createDataSource } from 'datasource';
+import { Service } from '../service';
+import { Permission, Config } from '../entry';
+import { getDataSource, createDataSource } from '../datasource';
 
 import { Database } from './database.entry';
 import { TenantPlanInfo } from './tenant_plan';

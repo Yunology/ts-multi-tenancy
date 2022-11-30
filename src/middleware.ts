@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { isUndefined } from 'lodash';
 
-import { getTenantService } from 'index';
+import { getTenantService } from '.';
 
 export function tenantMiddleware(
   req: Request, res: Response, next: NextFunction,

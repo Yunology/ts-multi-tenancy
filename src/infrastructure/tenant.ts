@@ -3,7 +3,7 @@ import { EntityManager } from 'typeorm';
 
 import {
   Tenant, Config, Database, TenantPlanInfo,
-} from 'entry';
+} from '../entry';
 
 import { InfrastructureManyModifiable } from './infrastructure';
 

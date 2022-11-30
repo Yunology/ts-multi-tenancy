@@ -1,5 +1,5 @@
 // src/service/service.ts
-import { RuntimeTenant } from 'entry';
+import { RuntimeTenant } from '../entry';
 
 export abstract class Service {
   protected tenant!: RuntimeTenant;

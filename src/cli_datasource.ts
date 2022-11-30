@@ -2,7 +2,7 @@
 import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
 
-import { createSystemDataSource } from 'datasource';
+import { createSystemDataSource } from './datasource';
 
 config({ path: `.env.${process.env.ENV_NAME}` });
 

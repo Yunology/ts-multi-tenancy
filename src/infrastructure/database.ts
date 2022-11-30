@@ -1,7 +1,7 @@
 // src/infrastructure/database.ts
 import { EntityManager } from 'typeorm';
 
-import { Database } from 'entry';
+import { Database } from '../entry';
 
 import { InfrastructureManyModifiable } from './infrastructure';
 
