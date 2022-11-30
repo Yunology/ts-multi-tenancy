@@ -3,7 +3,9 @@ import { Permission } from '../entry';
 import { Service } from '../service';
 
 let permissionValidateFunctionLoadedFlag = false;
-let permissionValidateFunction: Function = () => true;
+let permissionValidateFunction = (
+  service: Service, permission: Permission, ...args: unknown[]
+) => Promise.resolve(true);
 
 export function registerPermissionValidateFunction(
   validateFunction: (
@@ -45,7 +47,9 @@ export function PermissionRequire(permission: Permission) {
           'Non of any permissionValidateFunction registered,'
           + 'default will pass everything.');
       }
-      const result = await permissionValidateFunction(this, permission, ...args);
+      const result = await permissionValidateFunction(
+        this as Service, permission, ...args,
+      );
       if (!result) {
         throw new Error('No permission.');
       }

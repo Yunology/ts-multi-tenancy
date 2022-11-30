@@ -3,12 +3,13 @@ import { EntityManager, LoggerOptions } from 'typeorm';
 import { Request } from 'express';
 import { isUndefined } from 'lodash';
 
-import { Service } from './service';
 import { Tenant, RuntimeTenant, Database } from '../entry';
 import { CreateTenantDTO, CreateDatabaseDTO } from '../dto';
 import { DatabaseInfrastructure, TenantInfrastructure } from '../infrastructure';
 import { createDataSource, getSystemDataSource } from '../datasource';
 import { getPlan } from '..';
+
+import { Service } from './service';
 
 export class TenantService {
   private headerName = 'X-TENANT-ID';
