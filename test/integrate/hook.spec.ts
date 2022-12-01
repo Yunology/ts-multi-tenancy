@@ -5,8 +5,12 @@ import chaiAsPromised from 'chai-as-promised';
 import { EntityManager, LoggerOptions } from 'typeorm';
 
 import {
-  getSystemDataSource, createSystemDataSource, initInfrastructures, initPlans,
-  initMultiTenancy, TenantPlanInfo,
+  getSystemDataSource,
+  createSystemDataSource,
+  initInfrastructures,
+  initPlans,
+  initMultiTenancy,
+  TenantPlanInfo,
 } from 'index';
 
 chaiUse(chaiAsPromised);

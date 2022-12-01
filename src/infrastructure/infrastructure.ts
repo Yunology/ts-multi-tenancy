@@ -1,9 +1,16 @@
 // src/infrastructure/infrastructure.ts
 /* eslint-disable max-classes-per-file */
 import {
-  DeepPartial, FindOptionsWhere, FindManyOptions,
-  FindOneOptions, SaveOptions, Repository, ObjectLiteral,
-  FindOptionsUtils, EntityManager, EntityTarget,
+  DeepPartial,
+  FindOptionsWhere,
+  FindManyOptions,
+  FindOneOptions,
+  SaveOptions,
+  Repository,
+  ObjectLiteral,
+  FindOptionsUtils,
+  EntityManager,
+  EntityTarget,
 } from 'typeorm';
 import { isUndefined, omitBy } from 'lodash';
 
@@ -30,10 +37,12 @@ export abstract class Infrastructure<T extends ObjectLiteral> {
     this.t = clazz;
   }
 
-  public get repo(): (manager: EntityManager, clazz?: EntityTarget<T>) => Repository<T> {
-    return (manager: EntityManager, clazz?: EntityTarget<T>) => manager.getRepository(
-      clazz || this.t,
-    );
+  public get repo(): (
+    manager: EntityManager,
+    clazz?: EntityTarget<T>,
+  ) => Repository<T> {
+    return (manager: EntityManager, clazz?: EntityTarget<T>) =>
+      manager.getRepository(clazz || this.t);
   }
 
   protected getOrNull(
@@ -55,7 +64,10 @@ export abstract class Infrastructure<T extends ObjectLiteral> {
     const t: T | null = await this.getOrNull(manager, condition, option);
 
     if (t === null) {
-      throw new Error(`No such entry with given condition ${JSON.stringify(condition)} exists.`);
+      throw new Error(
+        'No such entry with given condition ' +
+          `${JSON.stringify(condition)} exists.`,
+      );
     }
     return t;
   }
@@ -66,7 +78,10 @@ export abstract class Infrastructure<T extends ObjectLiteral> {
     condition: FindOptionsWhere<T>,
     options?: SaveOptions,
   ): Promise<T> {
-    if (condition !== undefined && await this.repo(manager).countBy(condition) !== 0) {
+    if (
+      condition !== undefined &&
+      (await this.repo(manager).countBy(condition)) !== 0
+    ) {
       throw new Error('Such entity already exists.');
     }
     return this.repo(manager).save(entity, options);
@@ -86,7 +101,9 @@ export abstract class Infrastructure<T extends ObjectLiteral> {
  *
  * @author Clooooode
  */
-export abstract class InfrastructureModifiable<T extends ObjectLiteral> extends Infrastructure<T> {
+export abstract class InfrastructureModifiable<
+  T extends ObjectLiteral,
+> extends Infrastructure<T> {
   protected async update<E extends DeepPartial<T>>(
     manager: EntityManager,
     condition: FindOneOptions<T> | FindOptionsWhere<T>,
@@ -94,25 +111,34 @@ export abstract class InfrastructureModifiable<T extends ObjectLiteral> extends 
     options?: SaveOptions,
   ): Promise<T> {
     const findCondition = FindOptionsUtils.isFindOneOptions(condition)
-      ? condition.where! : condition;
+      ? condition.where!
+      : condition;
     // TODO: https://github.com/typeorm/typeorm/issues/3490  TypeORM sucks!
-    const findEntity: T | null = await this.repo(manager).findOneBy(findCondition);
+    const findEntity: T | null = await this.repo(manager).findOneBy(
+      findCondition,
+    );
     if (findEntity === null) {
       throw new Error('Such entitiy not exists.');
     }
-    return this.repo(manager).save({
-      ...findCondition,
-      ...findEntity,
-      ...omitBy(entity, isUndefined),
-    }, options);
+    return this.repo(manager).save(
+      {
+        ...findCondition,
+        ...findEntity,
+        ...omitBy(entity, isUndefined),
+      },
+      options,
+    );
   }
 
   protected async delete(
     manager: EntityManager,
     condition: FindOptionsWhere<T>,
   ): Promise<DeleteResultDTO> {
-    if (await this.repo(manager).countBy(condition) === 0) {
-      throw new Error(`No such entry with condition ${JSON.stringify(condition)} exists.`);
+    if ((await this.repo(manager).countBy(condition)) === 0) {
+      throw new Error(
+        'No such entry with condition ' +
+          `${JSON.stringify(condition)} exists.`,
+      );
     }
 
     return filterDeleteResult(await this.repo(manager).delete(condition));
@@ -130,8 +156,9 @@ export abstract class InfrastructureModifiable<T extends ObjectLiteral> extends 
  *
  * @author Clooooode
  */
-export abstract class InfrastructureManyModifiable<T extends ObjectLiteral>
-  extends InfrastructureModifiable<T> {
+export abstract class InfrastructureManyModifiable<
+  T extends ObjectLiteral,
+> extends InfrastructureModifiable<T> {
   protected async getMany(
     manager: EntityManager,
     condition: FindOptionsWhere<T> | FindOptionsWhere<T>[],

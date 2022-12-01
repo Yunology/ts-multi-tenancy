@@ -1,9 +1,7 @@
 // src/infrastructure/tenant.ts
 import { EntityManager } from 'typeorm';
 
-import {
-  Tenant, Config, Database, TenantPlanInfo,
-} from '../entry';
+import { Tenant, Config, Database, TenantPlanInfo } from '../entry';
 
 import { InfrastructureManyModifiable } from './infrastructure';
 
@@ -31,9 +29,13 @@ export class TenantInfrastructure extends InfrastructureManyModifiable<Tenant> {
   }
 
   public async getTenantries(manager: EntityManager): Promise<Array<Tenant>> {
-    return this.getMany(manager, {}, {
-      relations: { database: true },
-    });
+    return this.getMany(
+      manager,
+      {},
+      {
+        relations: { database: true },
+      },
+    );
   }
 
   public async insert(
