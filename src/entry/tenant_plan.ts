@@ -40,13 +40,14 @@ export class TenantPlanInfo {
   }
 }
 
-export const TenantPlanColumn: (options?: ColumnOptions) => PropertyDecorator = (
+export const TenantPlanColumn: (
   options?: ColumnOptions,
-) => Column({
-  ...options,
-  type: 'varchar',
-  transformer: {
-    to: (value: TenantPlanInfo) => value.schemaName,
-    from: (value: string) => getPlan(value),
-  },
-});
+) => PropertyDecorator = (options?: ColumnOptions) =>
+  Column({
+    ...options,
+    type: 'varchar',
+    transformer: {
+      to: (value: TenantPlanInfo) => value.schemaName,
+      from: (value: string) => getPlan(value),
+    },
+  });

@@ -4,12 +4,16 @@ import { Service } from '../service';
 
 let permissionValidateFunctionLoadedFlag = false;
 let permissionValidateFunction = (
-  service: Service, permission: Permission, ...args: unknown[]
+  service: Service,
+  permission: Permission,
+  ...args: unknown[]
 ) => Promise.resolve(true);
 
 export function registerPermissionValidateFunction(
   validateFunction: (
-    service: Service, permission: Permission, ...args: unknown[]
+    service: Service,
+    permission: Permission,
+    ...args: unknown[]
   ) => Promise<boolean>,
 ): void {
   if (permissionValidateFunctionLoadedFlag === true) {
@@ -20,7 +24,8 @@ export function registerPermissionValidateFunction(
 }
 
 export function filterInvalidPermission(
-  targetPermissions: Array<Permission>, test: Array<number>,
+  targetPermissions: Array<Permission>,
+  test: Array<number>,
 ): Array<number> {
   return test.filter((each) => {
     for (const every of targetPermissions) {
@@ -44,11 +49,14 @@ export function PermissionRequire(permission: Permission) {
     descriptor.value = async function _(...args: unknown[]) {
       if (permissionValidateFunctionLoadedFlag === false) {
         throw new Error(
-          'Non of any permissionValidateFunction registered,'
-          + 'default will pass everything.');
+          'Non of any permissionValidateFunction registered,' +
+            'default will pass everything.',
+        );
       }
       const result = await permissionValidateFunction(
-        this as Service, permission, ...args,
+        this as Service,
+        permission,
+        ...args,
       );
       if (!result) {
         throw new Error('No permission.');

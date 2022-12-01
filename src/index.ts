@@ -3,10 +3,13 @@ import { EntityManager, LoggerOptions } from 'typeorm';
 
 import { Service, TenantService } from './service';
 import {
-  initRedisDataSource, initSessionRedisStore, getSystemDataSource,
+  initRedisDataSource,
+  initSessionRedisStore,
+  getSystemDataSource,
 } from './datasource';
 import {
-  DatabaseInfrastructure, TenantInfrastructure,
+  DatabaseInfrastructure,
+  TenantInfrastructure,
 } from './infrastructure';
 import { TenantPlanInfo } from './entry';
 
@@ -50,27 +53,34 @@ export async function initMultiTenancy(
   tenantDbLogging?: LoggerOptions,
 ): Promise<void> {
   if (!planLoadedFlag || Object.values(loadedPlans).length === 0) {
-    throw new Error(`Non of any plans loaded. please invoke initPlans first.`);
+    throw new Error(
+      'Non of any plans loaded. please invoke initPlans first.',
+    );
   } else if (!infraLoadedFlag) {
-    throw new Error(`Non of any infras loaded. please invoke initInfrastructures first.`);
+    throw new Error(
+      'Non of any infras loaded. please invoke initInfrastructures first.',
+    );
   }
 
   tenantService = new TenantService(tenantHaederName, tenantDbLogging);
   const redisDataSource = await initRedisDataSource();
   const sessionStore = await initSessionRedisStore();
   const systemDataSource = await getSystemDataSource().initialize();
-  await systemDataSource.transaction('SERIALIZABLE', async (manager: EntityManager) => {
-    await tenantService.initModules(initModuleCallback);
-    if (preCreateSystemDatasFunction !== undefined) {
-      await preCreateSystemDatasFunction(manager);
-    }
-    await tenantService.initDatabases(manager);
-    await tenantService.precreateTenantries(manager);
-    if (preCreateTenantDatasFunction !== undefined) {
-      await preCreateTenantDatasFunction();
-    }
-    await tenantService.initlializeTenantries();
-  });
+  await systemDataSource.transaction(
+    'SERIALIZABLE',
+    async (manager: EntityManager) => {
+      await tenantService.initModules(initModuleCallback);
+      if (preCreateSystemDatasFunction !== undefined) {
+        await preCreateSystemDatasFunction(manager);
+      }
+      await tenantService.initDatabases(manager);
+      await tenantService.precreateTenantries(manager);
+      if (preCreateTenantDatasFunction !== undefined) {
+        await preCreateTenantDatasFunction();
+      }
+      await tenantService.initlializeTenantries();
+    },
+  );
 }
 
 export function getTenantService(): TenantService {

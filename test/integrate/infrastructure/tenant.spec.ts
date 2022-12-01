@@ -2,9 +2,7 @@
 import { expect } from 'chai';
 import { EntityManager } from 'typeorm';
 
-import {
-  Database, getPlan, Tenant, TenantInfrastructure,
-} from 'index';
+import { Database, getPlan, Tenant, TenantInfrastructure } from 'index';
 
 import { autoRollbackTransaction } from '../hook.spec';
 
@@ -22,7 +20,8 @@ describe('Tenant Infrastructure', () => {
     it('Should get all tenantriess', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
         const plan = getPlan('TEST-PLAN');
-        const db = await manager.getRepository(Database)
+        const db = await manager
+          .getRepository(Database)
           .save({ name: 'name1', url: 'url1' });
         await manager.getRepository(Tenant).save({
           name: 'name1',
@@ -56,10 +55,17 @@ describe('Tenant Infrastructure', () => {
     it('Should insert a tenantry', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
         const plan = getPlan('TEST-PLAN');
-        const db = await manager.getRepository(Database)
+        const db = await manager
+          .getRepository(Database)
           .save({ name: 'name1', url: 'url1' });
         const inserted = await TenantInfrastructure.getInstance().insert(
-          manager, 'name1', 'orgName1', true, db, {}, plan,
+          manager,
+          'name1',
+          'orgName1',
+          true,
+          db,
+          {},
+          plan,
         );
         expect(inserted.name).to.be.eq('name1');
         expect(inserted.orgName).to.be.eq('orgName1');

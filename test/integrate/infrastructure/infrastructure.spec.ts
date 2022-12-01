@@ -1,8 +1,20 @@
 // test/integrate/infrastructure/infrastructure.spec.ts
 import { expect } from 'chai';
-import { DeepPartial, EntityManager, FindManyOptions, FindOneOptions, FindOptionsWhere, SaveOptions } from 'typeorm';
+import {
+  DeepPartial,
+  EntityManager,
+  FindManyOptions,
+  FindOneOptions,
+  FindOptionsWhere,
+  SaveOptions,
+} from 'typeorm';
 
-import { Database, DeleteResultDTO, InfrastructureManyModifiable, Tenant } from 'index';
+import {
+  Database,
+  DeleteResultDTO,
+  InfrastructureManyModifiable,
+  Tenant,
+} from 'index';
 
 import { autoRollbackTransaction } from '../hook.spec';
 
@@ -82,7 +94,8 @@ describe('Infrastructure base class', () => {
     it('Should get null because is not find', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
         const found = await new TestDatabaseInfrastructure().getOrNull(
-          manager, { name: 'not-exists' },
+          manager,
+          { name: 'not-exists' },
         );
         expect(found).to.be.null;
       });
@@ -91,10 +104,12 @@ describe('Infrastructure base class', () => {
     it('Should get one', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
         await manager.getRepository(Database).save({
-          name: 'exists', url: 'exists-url',
-        })
+          name: 'exists',
+          url: 'exists-url',
+        });
         const found = await new TestDatabaseInfrastructure().getOrNull(
-          manager, { name: 'exists' },
+          manager,
+          { name: 'exists' },
         );
         expect(found).not.to.be.null;
         expect(found!.name).to.be.eq('exists');
@@ -107,12 +122,12 @@ describe('Infrastructure base class', () => {
     it('Should raise error because given condition is not found', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
         const condition = { name: 'not-exists' };
-        await expect(new TestDatabaseInfrastructure().get(
-          manager, condition,
-        )).to.eventually.rejectedWith(
+        await expect(
+          new TestDatabaseInfrastructure().get(manager, condition),
+        ).to.eventually.rejectedWith(
           Error,
-          'No such entry with given condition'
-            + ` ${JSON.stringify(condition)} exists.`,
+          'No such entry with given condition' +
+            ` ${JSON.stringify(condition)} exists.`,
         );
       });
     });
@@ -120,23 +135,25 @@ describe('Infrastructure base class', () => {
     it('Should get one', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
         await manager.getRepository(Database).save({
-          name: 'exists', url: 'exists-url',
+          name: 'exists',
+          url: 'exists-url',
         });
-        const found = await new TestDatabaseInfrastructure().get(
-          manager, { name: 'exists' },
-        );
+        const found = await new TestDatabaseInfrastructure().get(manager, {
+          name: 'exists',
+        });
         expect(found).not.to.be.null;
         expect(found!.name).to.be.eq('exists');
         expect(found!.url).to.be.eq('exists-url');
       });
     });
-  })
+  });
 
   describe('Method add', () => {
     it('Should raise error because such entity already exists', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
         await manager.getRepository(Database).save({
-          name: 'already-exists', url: 'exists-url',
+          name: 'already-exists',
+          url: 'exists-url',
         });
         await expect(
           new TestDatabaseInfrastructure().add(
@@ -144,9 +161,7 @@ describe('Infrastructure base class', () => {
             { name: '', url: '' } as Database,
             { name: 'already-exists' },
           ),
-        ).to.eventually.rejectedWith(
-          Error, 'Such entity already exists.',
-        );
+        ).to.eventually.rejectedWith(Error, 'Such entity already exists.');
       });
     });
   });
@@ -160,16 +175,15 @@ describe('Infrastructure base class', () => {
             { name: 'not-exists' },
             { name: 'exists', url: 'url' } as Database,
           ),
-        ).to.eventually.rejectedWith(
-          Error, '',
-        );
+        ).to.eventually.rejectedWith(Error, '');
       });
     });
 
     it('Should update given entity with FindOneOptions', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
         const db = await manager.getRepository(Database).save({
-          name: 'exists', url: 'exists-url',
+          name: 'exists',
+          url: 'exists-url',
         });
         const updated = await new TestDatabaseInfrastructure().update(
           manager,
@@ -186,7 +200,8 @@ describe('Infrastructure base class', () => {
     it('Should update given entity with FindOptionsWhere', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
         const db = await manager.getRepository(Database).save({
-          name: 'exists', url: 'exists-url',
+          name: 'exists',
+          url: 'exists-url',
         });
         const updated = await new TestDatabaseInfrastructure().update(
           manager,
@@ -204,11 +219,11 @@ describe('Infrastructure base class', () => {
     it('Should raise error because such entity not exists', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
         const condition = { name: 'not-exists' };
-        await expect(new TestDatabaseInfrastructure().delete(
-          manager, condition,
-        )).to.eventually.rejectedWith(
+        await expect(
+          new TestDatabaseInfrastructure().delete(manager, condition),
+        ).to.eventually.rejectedWith(
           Error,
-          `No such entry with condition ${JSON.stringify(condition)} exists.`
+          `No such entry with condition ${JSON.stringify(condition)} exists.`,
         );
       });
     });
@@ -216,11 +231,14 @@ describe('Infrastructure base class', () => {
     it('Should delete given entity', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
         const db = await manager.getRepository(Database).save({
-          name: 'exists', url: 'exists-url',
+          name: 'exists',
+          url: 'exists-url',
         });
         const deleted = await new TestDatabaseInfrastructure().delete(
           manager,
-          { id: db.id },
+          {
+            id: db.id,
+          },
         );
         expect(deleted.success).to.be.true;
       });
@@ -231,17 +249,20 @@ describe('Infrastructure base class', () => {
     it('Should get many with given condition', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
         const db1 = await manager.getRepository(Database).save({
-          name: 'db1', url: 'exists-url',
+          name: 'db1',
+          url: 'exists-url',
         });
         const db2 = await manager.getRepository(Database).save({
-          name: 'db2', url: 'exists-url',
+          name: 'db2',
+          url: 'exists-url',
         });
         const db3 = await manager.getRepository(Database).save({
-          name: 'db3', url: 'exists-url',
+          name: 'db3',
+          url: 'exists-url',
         });
-        const dbs = await new TestDatabaseInfrastructure().getMany(
-          manager, { url: 'exists-url' },
-        );
+        const dbs = await new TestDatabaseInfrastructure().getMany(manager, {
+          url: 'exists-url',
+        });
         expect(dbs.length).to.be.eq(3);
         expect(dbs.find(({ name }) => name === 'db1')).not.to.be.undefined;
         expect(dbs.find(({ name }) => name === 'db2')).not.to.be.undefined;

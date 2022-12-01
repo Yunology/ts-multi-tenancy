@@ -24,7 +24,9 @@ export class DatabaseInfrastructure extends InfrastructureManyModifiable<Databas
     super(Database);
   }
 
-  public async getDatabases(manager: EntityManager): Promise<Array<Database>> {
+  public async getDatabases(
+    manager: EntityManager,
+  ): Promise<Array<Database>> {
     return this.getMany(manager, {});
   }
 

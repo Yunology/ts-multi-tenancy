@@ -1,8 +1,6 @@
 // src/datasoruce.ts
 import { DataSource, LoggerOptions } from 'typeorm';
-import {
-  PostgresConnectionOptions,
-} from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { createClient, RedisClientType } from 'redis';
 import session from 'express-session';
 import connectRedis, { RedisStore } from 'connect-redis';
@@ -10,7 +8,8 @@ import connectRedis, { RedisStore } from 'connect-redis';
 // Tenant entitires & migrations
 import { Tenant, Database } from './entry';
 import {
-  TenantInit1668658417786, BaseEntityIdField1668675504073,
+  TenantInit1668658417786,
+  BaseEntityIdField1668675504073,
 } from './migration';
 
 const RedisStore = connectRedis(session);
