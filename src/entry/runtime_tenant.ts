@@ -2,12 +2,12 @@
 import { DataSource, LoggerOptions } from 'typeorm';
 import { groupBy, isEmpty, isUndefined, omitBy } from 'lodash';
 
+import { Service } from '../service';
+import { Permission, Config } from '.';
+import { getDataSource, createDataSource } from '../datasource';
+
 import { Database } from './database.entry';
 import { TenantPlanInfo } from './tenant_plan';
-
-import { Service } from '../service';
-import { Permission, Config } from '../entry';
-import { getDataSource, createDataSource } from '../datasource';
 
 export class RuntimeTenant {
   private id: string;
@@ -19,7 +19,7 @@ export class RuntimeTenant {
   private dataSource!: DataSource;
   private modules: Record<string, Service>;
   private permissions: { [key: string]: Permission } = {
-    ROOT: new Permission(0xFFFF, 'ROOT', '管理員權限'),
+    ROOT: new Permission(0xffff, 'ROOT', '管理員權限'),
   };
   private allowDomains: Array<string> = [];
 
@@ -42,20 +42,25 @@ export class RuntimeTenant {
   }
 
   async precreateSchema(
-    { name, url }: Database, schema: string, logging?: LoggerOptions,
+    { name, url }: Database,
+    schema: string,
+    logging?: LoggerOptions,
   ): Promise<void> {
     let systemDb: DataSource | undefined = getDataSource(name);
     if (systemDb === undefined) {
       systemDb = createDataSource(name, 'public', { url, logging });
     }
 
-    if (!systemDb.isInitialized) { await systemDb.initialize(); }
+    if (!systemDb.isInitialized) {
+      await systemDb.initialize();
+    }
     await systemDb.manager.query(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
     await systemDb.destroy();
   }
 
   async precreateDataSource(
-    { name, url }: Database, logging?: LoggerOptions,
+    { name, url }: Database,
+    logging?: LoggerOptions,
   ): Promise<void> {
     const { schemaName, entries, migrations } = this.plan;
 
@@ -65,7 +70,9 @@ export class RuntimeTenant {
       migrations,
       logging,
     });
-    if (!this.dataSource.isInitialized) { await this.dataSource.initialize(); }
+    if (!this.dataSource.isInitialized) {
+      await this.dataSource.initialize();
+    }
   }
 
   async moduleInitlialize(): Promise<void> {
@@ -78,17 +85,18 @@ export class RuntimeTenant {
     this.allowDomains = this.getConfig<Array<string>>('allowDomains', []);
   }
 
-  get getConfig(): <T>(key: string, defaultValue?: T) => T{
-    return <T>(key: string, defaultValue?: T): T => (
-      this.config[key] || defaultValue
-    );
+  get getConfig(): <T>(key: string, defaultValue?: T) => T {
+    return <T>(key: string, defaultValue?: T): T =>
+      this.config[key] || defaultValue;
   }
 
   get getRequireConfig(): <T>(key: string) => T {
     return <T>(key: string): T => {
       const value = this.config[key];
       if (isUndefined(value)) {
-        throw new Error(`Given config key: ${key} is require, but got undefined.`);
+        throw new Error(
+          `Given config key: ${key} is require, but got undefined.`,
+        );
       }
       return value as T;
     };
@@ -123,8 +131,8 @@ export class RuntimeTenant {
     const found = this.modules[name];
     if (isUndefined(found)) {
       throw new Error(
-        'Such tenant not allow to use given module'
-        + ` or module is not exists: ${name}`,
+        'Such tenant not allow to use given module' +
+          ` or module is not exists: ${name}`,
       );
     }
     return found as T;
@@ -133,20 +141,29 @@ export class RuntimeTenant {
   private examinePermissionDuplicate(): Record<number, Array<Permission>> {
     return omitBy(
       groupBy(Object.values(this.permissions), ({ index }) => index),
-      (({ length }) => length === 1),
+      ({ length }) => length === 1,
     );
   }
 
-  public async insertPermission(permissions: Record<string, Permission>): Promise<void> {
+  public async insertPermission(
+    permissions: Record<string, Permission>,
+  ): Promise<void> {
     this.permissions = {
       ...permissions,
       ...this.permissions,
     };
     const duplicates = this.examinePermissionDuplicate();
     if (!isEmpty(duplicates)) {
-      throw new Error(`Duplicate Permission: ${Object.values(duplicates)
-        .map((each) => `[${each.map(({ name, index }) => `${name}-${index}`).join(', ')}]`)
-        .join(', ')}`);
+      throw new Error(
+        `Duplicate Permission: ${Object.values(duplicates)
+          .map(
+            (each) =>
+              `[${each
+                .map(({ name, index }) => `${name}-${index}`)
+                .join(', ')}]`,
+          )
+          .join(', ')}`,
+      );
     }
   }
 
@@ -157,16 +174,26 @@ export class RuntimeTenant {
    * @param test Permission or permission index to be compare.
    * @returns matched or not.
    */
-   public isPermissionMatched(target: Permission | number, test: Permission | number): boolean {
-    const targetInstance = target instanceof Permission ? target.index : target;
+  public isPermissionMatched(
+    target: Permission | number,
+    test: Permission | number,
+  ): boolean {
+    const targetInstance =
+      target instanceof Permission ? target.index : target;
     const testInstance = test instanceof Permission ? test.index : test;
-    if (targetInstance === 0xFFFF || targetInstance === testInstance) { return true; }
+    if (targetInstance === 0xffff || targetInstance === testInstance) {
+      return true;
+    }
 
-    const targetCategory = targetInstance & 0xFF00;
-    const testCategory = testInstance & 0xFF00;
-    if (targetCategory !== testCategory) { return false; }
+    /* eslint-disable no-bitwise */
+    const targetCategory = targetInstance & 0xff00;
+    const testCategory = testInstance & 0xff00;
+    /* eslint-enable no-bitwise */
+    if (targetCategory !== testCategory) {
+      return false;
+    }
 
     const targetValue = targetInstance - targetCategory;
-    return targetValue === 0x00FF;
+    return targetValue === 0x00ff;
   }
 }

@@ -1,8 +1,9 @@
 // src/infrastructure/database.ts
 import { EntityManager } from 'typeorm';
 
-import { InfrastructureManyModifiable } from './infrastructure';
 import { Database } from '../entry';
+
+import { InfrastructureManyModifiable } from './infrastructure';
 
 export class DatabaseInfrastructure extends InfrastructureManyModifiable<Database> {
   private static INSTANCE: DatabaseInfrastructure;
@@ -23,7 +24,9 @@ export class DatabaseInfrastructure extends InfrastructureManyModifiable<Databas
     super(Database);
   }
 
-  public async getDatabases(manager: EntityManager): Promise<Array<Database>> {
+  public async getDatabases(
+    manager: EntityManager,
+  ): Promise<Array<Database>> {
     return this.getMany(manager, {});
   }
 

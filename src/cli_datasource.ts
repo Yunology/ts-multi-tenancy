@@ -9,6 +9,6 @@ config({ path: `.env.${process.env.ENV_NAME}` });
 const { env } = process;
 const { DB_URL } = env;
 
-let dataSource: DataSource = createSystemDataSource(DB_URL!);
+const dataSource: DataSource = createSystemDataSource(DB_URL!);
 
 export default dataSource;

@@ -1,7 +1,5 @@
 // src/entry/tenant.entry.ts
-import {
-  Column, Entity, PrimaryColumn, ManyToOne,
-} from 'typeorm';
+import { Column, Entity, PrimaryColumn, ManyToOne } from 'typeorm';
 
 import { BaseEntity } from './base_entity';
 import { Database } from './database.entry';

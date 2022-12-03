@@ -19,9 +19,11 @@ describe('Database Infrastructure', () => {
 
     it('Should get all databases', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
-        await manager.getRepository(Database)
+        await manager
+          .getRepository(Database)
           .save({ name: 'name1', url: 'url1' });
-        await manager.getRepository(Database)
+        await manager
+          .getRepository(Database)
           .save({ name: 'name2', url: 'url2' });
 
         const dbs = await DatabaseInfrastructure.getInstance().getDatabases(
@@ -39,7 +41,9 @@ describe('Database Infrastructure', () => {
     it('Should insert a database', async () => {
       await autoRollbackTransaction(async (manager: EntityManager) => {
         const inserted = await DatabaseInfrastructure.getInstance().insert(
-          manager, 'test-name', 'test-url',
+          manager,
+          'test-name',
+          'test-url',
         );
         expect(inserted.name).to.be.eq('test-name');
         expect(inserted.url).to.be.eq('test-url');

@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/ban-types, no-underscore-dangle */
 import { Column, ColumnOptions } from 'typeorm';
 
-import { getPlan } from '..';
 import { Service } from '../service';
+import { getPlan } from '..';
 
 export class TenantPlanInfo {
   private readonly _schemaName: string;
@@ -40,13 +40,14 @@ export class TenantPlanInfo {
   }
 }
 
-export const TenantPlanColumn: (options?: ColumnOptions) => PropertyDecorator = (
+export const TenantPlanColumn: (
   options?: ColumnOptions,
-) => Column({
-  ...options,
-  type: 'varchar',
-  transformer: {
-    to: (value: TenantPlanInfo) => value.schemaName,
-    from: (value: string) => getPlan(value),
-  },
-});
+) => PropertyDecorator = (options?: ColumnOptions) =>
+  Column({
+    ...options,
+    type: 'varchar',
+    transformer: {
+      to: (value: TenantPlanInfo) => value.schemaName,
+      from: (value: string) => getPlan(value),
+    },
+  });

@@ -15,4 +15,6 @@ export abstract class Service {
   get getTenant(): RuntimeTenant {
     return this.tenant;
   }
+
+  abstract clone(): Service;
 }

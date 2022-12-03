@@ -9,10 +9,8 @@ describe('Helper Permission', () => {
     it('Should return empty', () => {
       const permission = new Permission(0x0001, '0x0001');
       const permission2 = new Permission(0x0002, '0x0002');
-      expect(filterInvalidPermission(
-        [permission, permission2],
-        [0x0001],
-      )).to.be.empty;
+      expect(filterInvalidPermission([permission, permission2], [0x0001])).to
+        .be.empty;
     });
 
     it('Should return 99999', () => {

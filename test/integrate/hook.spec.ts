@@ -5,8 +5,12 @@ import chaiAsPromised from 'chai-as-promised';
 import { EntityManager, LoggerOptions } from 'typeorm';
 
 import {
-  getSystemDataSource, createSystemDataSource, initInfrastructures, initPlans,
-  initMultiTenancy, TenantPlanInfo,
+  getSystemDataSource,
+  createSystemDataSource,
+  initInfrastructures,
+  initPlans,
+  initMultiTenancy,
+  TenantPlanInfo,
 } from 'index';
 
 chaiUse(chaiAsPromised);
@@ -43,10 +47,10 @@ export const mochaHooks = {
     initPlans(() => ({
       'TEST-PLAN': new TenantPlanInfo('TEST-PLAN', [], [], []),
     }));
-    await initInfrastructures(async () => {});
+    await initInfrastructures(() => Promise.resolve());
     await initMultiTenancy(
-      async () => ({}),
-      async (manager: EntityManager) => {},
+      () => Promise.resolve({}),
+      () => Promise.resolve(),
       undefined,
       'X-TEST-TENANT-HEADER',
       DB_LOGGING as LoggerOptions,

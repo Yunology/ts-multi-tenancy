@@ -26,9 +26,10 @@ export class RedisCache {
       return;
     }
 
-    await cli.set(`${this.prefix}:${key}`, JSON.stringify(data), this.ttl !== -1
-      ? { EX: this.ttl }
-      : undefined,
+    await cli.set(
+      `${this.prefix}:${key}`,
+      JSON.stringify(data),
+      this.ttl !== -1 ? { EX: this.ttl } : undefined,
     );
     if (this.ttl === -1) {
       await cli.persist(`${this.prefix}:${key}`);

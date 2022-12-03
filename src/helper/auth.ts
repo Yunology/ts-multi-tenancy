@@ -1,11 +1,15 @@
 // src/helper/auth.ts
-import { Service } from 'service';
+import { Service } from '../service';
 
 let signInValidateFunctionLoadedFlag = false;
-let signInValidateFunction: Function = () => true;
+let signInValidateFunction = (service: Service, ...args: unknown[]) =>
+  Promise.resolve(true);
 
 export function registerSignInValidateFunction(
-  validateFunction: (service: Service, ...args: unknown[]) => Promise<boolean>,
+  validateFunction: (
+    service: Service,
+    ...args: unknown[]
+  ) => Promise<boolean>,
 ): void {
   if (signInValidateFunctionLoadedFlag === true) {
     console.log('Duplicate register may cause override.');
@@ -26,10 +30,11 @@ export function SignInRequire() {
     descriptor.value = async function _(...args: unknown[]) {
       if (signInValidateFunctionLoadedFlag === false) {
         throw new Error(
-          'Non of any signInValidateFunction registered,'
-          + 'default will pass everything.');
+          'Non of any signInValidateFunction registered,' +
+            'default will pass everything.',
+        );
       }
-      const result = await signInValidateFunction(this, ...args);
+      const result = await signInValidateFunction(this as Service, ...args);
       if (!result) {
         throw new Error('Please login first.');
       }

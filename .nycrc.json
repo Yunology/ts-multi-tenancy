@@ -5,7 +5,9 @@
       "src/**"
     ],
     "exclude": [
-      "src/migration/**"
+      "src/migration/**",
+      "src/types/**",
+      "src/cli_datasource.ts"
     ],
     "reporter": [
       "lcov",
