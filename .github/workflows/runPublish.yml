@@ -1,12 +1,16 @@
-name: Publish package to GitHub Packages
+name: Publish
 on:
-  push:
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Test]
+    types:
+      - completed
     branches:
-      - 'Release'
+      - Release
 
 jobs:
   build:
-    name: Building
+    name: Publish
     runs-on: [ubuntu-latest]
     permissions:
       contents: read
