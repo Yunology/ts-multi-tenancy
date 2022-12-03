@@ -1,7 +1,11 @@
+## [v0.0.4](https://github.com/Yunology/multi-tenancy/releases/tag/v0.0.4)  -  2022-12-04
+### Fixed
+- Tenant not init when create.(#10)
+
 ## [v0.0.3](https://github.com/Yunology/multi-tenancy/releases/tag/v0.0.3)  -  2022-11-26
 ### Added
-- Permission helper for PermissionRequire decorator
-- Auth helper for SignInRequire decorator
+- Auth helper for SignInRequire decorator.(#8)
+- Permission helper for PermissionRequire decorator.(#7)
 
 ## [v0.0.2](https://github.com/Yunology/multi-tenancy/releases/tag/v0.0.2)  -  2022-11-25
 ### Added
@@ -9,13 +13,13 @@
 - UUID @ BaseEntity.
 - allowDomains mechanism in RuntimeTenant.
 - tenantMiddleware for module use.
-- TenantEntity for module to add tenant labeled data in database.
+- TenantEntity for module to add tenant labeled data in database.(#4)
 
 ### Misc
-- Flatten Tenant data in RuntimeTenant.
+- Flatten Tenant data in RuntimeTenant.(#2)
 - Remove Infrastructure#getManyByIds since it can do with getMany method.(#3)
 
-### Fix
+### Fixed
 - Incorrect Infrastructure#update logic.(#4)
 
 ## [v0.0.1](https://github.com/Yunology/multi-tenancy/releases/tag/v0.0.1)  -  2022-11-16
