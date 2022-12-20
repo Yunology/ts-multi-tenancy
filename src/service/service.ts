@@ -16,6 +16,13 @@ export abstract class Service<S extends ConfigTree = {}> {
       throw new Error('Service is inited with tenant.');
     }
     this.tenant = tenant;
+
+    Object.keys(this.config).forEach((key: keyof S) => {
+      this.config[key] = this.tenant.getConfig<S[typeof key]>(
+        key as string, this.config[key],
+      );
+    });
+
     return this;
   }
 
