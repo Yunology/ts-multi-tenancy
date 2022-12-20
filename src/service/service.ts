@@ -1,10 +1,17 @@
 // src/service/service.ts
 import { RuntimeTenant } from '../entry';
 
-export abstract class Service {
-  protected tenant!: RuntimeTenant;
+export type ConfigTree = Record<string | symbol, any>;
 
-  async init(tenant: RuntimeTenant): Promise<Service> {
+export abstract class Service<S extends ConfigTree = {}> {
+  protected tenant!: RuntimeTenant;
+  protected config!: S;
+
+  constructor(config: S = {} as S) {
+    this.config = config;
+  }
+
+  async init(tenant: RuntimeTenant): Promise<Service<S>> {
     if (this.tenant !== undefined) {
       throw new Error('Service is inited with tenant.');
     }
@@ -16,5 +23,5 @@ export abstract class Service {
     return this.tenant;
   }
 
-  abstract clone(): Service;
+  abstract clone(): Service<S>;
 }
