@@ -22,6 +22,7 @@ export abstract class Service<
       throw new Error('Service is inited with tenant.');
     }
     this.tenant = tenant;
+    this.tenant.insertPermission(this.permission);
 
     Object.keys(this.config).forEach((key: keyof C) => {
       this.config[key] = this.tenant.getConfig<C[typeof key]>(
