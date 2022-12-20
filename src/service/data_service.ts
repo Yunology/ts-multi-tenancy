@@ -3,7 +3,7 @@ import { EntityManager } from 'typeorm';
 
 import { ConfigTree, Service } from './service';
 
-export abstract class DataService<S extends ConfigTree = {}> extends Service<S> {
+export abstract class DataService<C extends ConfigTree = {}> extends Service<C> {
   serialTran<T>(
     runInTransaction: (manager: EntityManager) => Promise<T>,
   ): Promise<T> {
