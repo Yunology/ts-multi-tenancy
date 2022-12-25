@@ -1,4 +1,5 @@
 // src/index.ts
+import 'reflect-metadata';
 import { EntityManager, LoggerOptions } from 'typeorm';
 
 import { Service, DatabaseService, TenantService } from './service';

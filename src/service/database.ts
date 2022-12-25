@@ -2,24 +2,33 @@
 import { EntityManager, LoggerOptions } from 'typeorm';
 
 import { CreateDatabaseDTO } from '../dto';
-import { Config, Database, RuntimeTenant } from '../entry';
+import { Database, RuntimeTenant } from '../entry';
 import { DatabaseInfrastructure } from '../infrastructure';
+import { ProvideConfig, HelperParameter } from '../helper';
 import { createDataSource, getSystemDataSource } from '../datasource';
 
-export class DatabaseService {
+import { ConfigTree, Service } from './service';
+
+export interface IDatabaseConfig extends ConfigTree {
+  database: string;
+};
+
+export class DatabaseService extends Service {
   private dbLogging: LoggerOptions | undefined;
   private databases: Record<string, Database> = {};
 
   constructor(dbLogging?: LoggerOptions) {
+    super();
     this.dbLogging = dbLogging;
   }
 
+  @ProvideConfig<IDatabaseConfig>(['database'])
   async precreateRuntimeTenantProperties(
+    params: HelperParameter<IDatabaseConfig>,
     rt: RuntimeTenant,
-    { database: dbId }: Config,
     schemaName: string,
   ): Promise<void> {
-    const database = this.databases[dbId];
+    const database = this.databases[params.configs!.database];
     await rt.precreateSchema(database, schemaName, this.dbLogging);
     await rt.precreateDataSource(database, this.dbLogging);
   }
