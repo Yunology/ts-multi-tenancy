@@ -32,10 +32,7 @@ export class TenantService {
   }
 
   async precreateTenantries(manager: EntityManager): Promise<void> {
-    const tenants = await manager.getRepository(Tenant).find({
-      where: {},
-      relations: { database: true },
-    });
+    const tenants = await manager.getRepository(Tenant).find({ where: {} });
     for (const tenant of tenants) {
       const runtimeTenant = await this.precreateTenant(tenant);
       this.runtimeTenants[tenant.id] = runtimeTenant;
@@ -50,7 +47,7 @@ export class TenantService {
   }
 
   async precreateTenant(tenant: Tenant): Promise<RuntimeTenant> {
-    const { id, name, orgName, activate, database, config } = tenant;
+    const { id, name, orgName, activate, config } = tenant;
     const { plan } = tenant;
     const { schemaName, modulesName } = plan;
     const modules = Object.assign(
@@ -70,7 +67,7 @@ export class TenantService {
     );
     if (activate) {
       await getDatabaseService().precreateRuntimeTenantProperties(
-        rt, database, schemaName,
+        rt, config, schemaName,
       );
     }
     return rt;
@@ -91,18 +88,15 @@ export class TenantService {
         name,
         orgName,
         activate,
-        database: dbId,
         config,
         plan: planString,
       } = dto;
       const plan = getPlan(planString);
-      const database = getDatabaseService().getById(dbId);
       const tenant = await TenantInfrastructure.getInstance().insert(
         m,
         name,
         orgName,
         activate,
-        database,
         config,
         plan,
       );
