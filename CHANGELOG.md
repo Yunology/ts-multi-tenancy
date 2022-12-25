@@ -1,3 +1,9 @@
+## [v0.0.5](https://github.com/Yunology/multi-tenancy/releases/tag/v0.0.4)  -  2022-12-20
+### Added
+- Permission & Config generic type @ Service & DataService.
+### Fixed
+- Broken Service#clone method, replace to old one.
+
 ## [v0.0.4](https://github.com/Yunology/multi-tenancy/releases/tag/v0.0.4)  -  2022-12-04
 ### Fixed
 - Tenant not init when create.(#10)

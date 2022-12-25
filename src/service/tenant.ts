@@ -1,7 +1,7 @@
 // src/service/tenant.ts
 import { EntityManager, LoggerOptions } from 'typeorm';
 import { Request } from 'express';
-import { isUndefined } from 'lodash';
+import { cloneDeep, isUndefined } from 'lodash';
 
 import { Tenant, RuntimeTenant, Database } from '../entry';
 import { CreateTenantDTO, CreateDatabaseDTO } from '../dto';
@@ -72,7 +72,7 @@ export class TenantService {
     const modules = Object.assign(
       {},
       ...modulesName.map((eachModuleName) => ({
-        [eachModuleName]: this.loadedModules[eachModuleName].clone(),
+        [eachModuleName]: cloneDeep(this.loadedModules[eachModuleName]),
       })),
     );
     const rt = new RuntimeTenant(
