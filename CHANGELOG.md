@@ -1,3 +1,7 @@
+## [v0.0.6](https://github.com/Yunology/multi-tenancy/releases/tag/v0.0.6)  -  2022-12-30
+### Fixed
+- Incorrect module type @ TenantPlanInfo cause init error at invoker.
+
 ## [v0.0.5](https://github.com/Yunology/multi-tenancy/releases/tag/v0.0.4)  -  2022-12-20
 ### Added
 - Permission & Config generic type @ Service & DataService.
