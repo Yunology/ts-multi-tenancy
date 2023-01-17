@@ -1,6 +1,6 @@
 {
-  "name": "@yunology/multi-tenancy",
-  "version": "0.0.6",
+  "name": "@yunology/ts-multi-tenancy",
+  "version": "0.0.7",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -8,7 +8,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Yunology/multi-tenancy"
+    "url": "https://github.com/Yunology/ts-multi-tenancy"
   },
   "author": "Clooooode <jackey8616@gmail.com>",
   "license": "MIT",
