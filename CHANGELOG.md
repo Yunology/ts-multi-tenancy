@@ -1,3 +1,7 @@
+## [v0.0.7](https://github.com/Yunology/ts-multi-tenancy/releases/tag/v0.0.7)  -  2023-01-17
+### Added
+- Open source with MIT license.
+
 ## [v0.0.6](https://github.com/Yunology/ts-multi-tenancy/releases/tag/v0.0.6)  -  2022-12-30
 ### Fixed
 - Incorrect module type @ TenantPlanInfo cause init error at invoker.
