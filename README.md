@@ -34,5 +34,5 @@ To run tests, run the following command
 
 ## License
 
-[MIT](https://github.com/Yunology/ts-multi-tenancy/blob/Develop/LICENSE.md)
+[MIT](https://github.com/Yunology/ts-multi-tenancy/blob/develop/LICENSE.md)
 
