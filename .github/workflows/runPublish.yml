@@ -1,12 +1,8 @@
 name: Publish
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: [Test]
-    types:
-      - completed
-    branches:
-      - Release
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -29,6 +25,8 @@ jobs:
           unset: scripts.postinstall, scripts.prepack, scripts.postpack
       - run: yarn
       - run: yarn build
-      - run: yarn publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          dry-run: true
+
