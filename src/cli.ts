@@ -2,11 +2,14 @@
 // src/cli.ts
 import yargs from 'yargs';
 
-import { SystemMigrtionRunCommand } from './cli_command/system_migration_show';
+import {
+  SystemMigrationCommand, MigrationGenerateCommand,
+} from './cli_command';
 
 yargs
   .usage('Usage: $0 <command> [options]')
-  .command(new SystemMigrtionRunCommand())
+  .command(new SystemMigrationCommand())
+  .command(new MigrationGenerateCommand())
   .recommendCommands()
   .demandCommand(1)
   .strict().argv;
