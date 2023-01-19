@@ -17,8 +17,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@yunology'
       - name: Setup package.json
         uses: jaywcjlove/github-action-package@main
         with:
