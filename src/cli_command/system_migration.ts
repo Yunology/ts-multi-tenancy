@@ -1,5 +1,5 @@
 // src/cli_command/system_migration.ts
-import { ArgumentsCamelCase, Argv, CommandModule } from 'yargs';
+import { Argv, Arguments, CommandModule } from 'yargs';
 
 import { SystemMigrationShowCommand } from './system_migration_show';
 import { SystemMigrationRunCommand } from './system_migration_run';
@@ -17,7 +17,5 @@ export class SystemMigrationCommand implements CommandModule {
       .command(new SystemMigrationRevertCommand());
   }
 
-  handler(args: ArgumentsCamelCase<{}>): void | Promise<void> {
-    return;
-  }
+  handler(_: Arguments): void | Promise<void> {}
 }

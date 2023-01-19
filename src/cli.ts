@@ -3,7 +3,8 @@
 import yargs from 'yargs';
 
 import {
-  SystemMigrationCommand, MigrationGenerateCommand,
+  SystemMigrationCommand,
+  MigrationGenerateCommand,
 } from './cli_command';
 
 yargs

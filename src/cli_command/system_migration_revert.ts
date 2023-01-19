@@ -7,8 +7,10 @@ export class SystemMigrationRevertCommand implements CommandModule {
   command = 'revert';
   describe = 'Revert system migration';
 
-  async handler(args: Arguments) {
+  async handler(_: Arguments) {
     const moduleName = 'node_modules/@yunology/ts-multi-tenancy';
-    exec(`yarn typeorm migration:revert -d ${cwd()}/${moduleName}/dist/cli_datasource.js`);
+    exec(
+      `yarn typeorm migration:revert -d ${cwd()}/${moduleName}/dist/cli_datasource.js`,
+    );
   }
 }
