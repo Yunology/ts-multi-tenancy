@@ -1,3 +1,8 @@
+## [v0.0.8](https://github.com/Yunology/ts-multi-tenancy/releases/tag/v0.0.8)  -  2023-01-20
+### Added
+- cli for ts-multi-tenancy & regular migration management.
+- Publish packages to npm.
+
 ## [v0.0.7](https://github.com/Yunology/ts-multi-tenancy/releases/tag/v0.0.7)  -  2023-01-17
 ### Added
 - Open source with MIT license.
