@@ -35,7 +35,6 @@
     "@types/lodash": "^4.14.188",
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.11.9",
-    "@types/shelljs": "^0.8.11",
     "@types/yargs": "^17.0.20",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
@@ -80,7 +79,6 @@
   },
   "dependencies": {
     "dotenv": "16.0.3",
-    "shelljs": "0.8.5",
     "yargs": "17.6.2"
   }
 }
