@@ -1,32 +1,28 @@
 // src/service/service.ts
-import { Permission, RuntimeTenant } from '../entry';
+import { RuntimeTenant } from '../entry';
+import { injectPermissionToRuntimeTenant } from '../helper';
 
 export type ConfigTree = Record<string | symbol, any>;
-export type PermissionTree = Record<string, Permission>;
 
-export abstract class Service<
-  P extends PermissionTree = {},
-  C extends ConfigTree = {},
-> {
+export abstract class Service<C extends ConfigTree = {}> {
   protected tenant!: RuntimeTenant;
-  public readonly permission!: P;
   protected config!: C;
 
-  constructor(permission: P = {} as P, config: C = {} as C) {
-    this.permission = permission;
+  constructor(config: C = {} as C) {
     this.config = config;
   }
 
-  async init(tenant: RuntimeTenant): Promise<Service<P, C>> {
+  async init(tenant: RuntimeTenant): Promise<Service<C>> {
     if (this.tenant !== undefined) {
       throw new Error('Service is inited with tenant.');
     }
     this.tenant = tenant;
-    this.tenant.insertPermission(this.permission);
+    injectPermissionToRuntimeTenant(this.constructor, this.tenant);
 
     Object.keys(this.config).forEach((key: keyof C) => {
       this.config[key] = this.tenant.getConfig<C[typeof key]>(
-        key as string, this.config[key],
+        key as string,
+        this.config[key],
       );
     });
 
