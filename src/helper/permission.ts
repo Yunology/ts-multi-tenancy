@@ -1,6 +1,6 @@
 // src/helper/permission.ts
-import { Permission } from '../entry';
-import { Service } from '../service';
+import { Permission, RuntimeTenant } from '../entry';
+import { PermissionTree, Service } from '../service';
 
 let permissionValidateFunctionLoadedFlag = false;
 let permissionValidateFunction = (
@@ -37,6 +37,19 @@ export function filterInvalidPermission(
   });
 }
 
+export function SetupPermission<P extends PermissionTree>(permission: P): ClassDecorator {
+  return (target: any) => {
+    if (!(new target() instanceof Service)) {
+      throw new Error(`SetupPermission can only use at Service's child classes.`);
+    }
+
+    const toSetPermission = Reflect.hasMetadata('permission', target)
+      ? { ...Reflect.getMetadata('permission', target), ...permission }
+      : permission;
+    Reflect.defineMetadata('permission', toSetPermission, target);
+  };
+}
+
 export function PermissionRequire(permission: Permission) {
   return (
     target: unknown,
@@ -67,4 +80,11 @@ export function PermissionRequire(permission: Permission) {
 
     return descriptor;
   };
+}
+
+export function injectPermissionToRuntimeTenant(
+  serviceConstructor: Function,
+  rt: RuntimeTenant,
+): void {
+  rt.insertPermission(Reflect.getMetadata('permission', serviceConstructor) as Record<string, Permission>);
 }
