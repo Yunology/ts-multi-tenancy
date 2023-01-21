@@ -5,7 +5,6 @@ import { EntityManager, LoggerOptions } from 'typeorm';
 import { Service, DatabaseService, TenantService } from './service';
 import {
   initRedisDataSource,
-  initSessionRedisStore,
   getSystemDataSource,
 } from './datasource';
 import {
@@ -67,7 +66,6 @@ export async function initMultiTenancy(
   databaseService = new DatabaseService(tenantDbLogging);
   tenantService = new TenantService(tenantHaederName);
   const redisDataSource = await initRedisDataSource();
-  const sessionStore = await initSessionRedisStore();
   const systemDataSource = await getSystemDataSource().initialize();
   await systemDataSource.transaction(
     'SERIALIZABLE',
