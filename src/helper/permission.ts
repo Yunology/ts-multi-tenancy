@@ -1,6 +1,6 @@
 // src/helper/permission.ts
 import { Permission, RuntimeTenant } from '../entry';
-import { PermissionTree, Service } from '../service';
+import { Service } from '../service';
 
 let permissionValidateFunctionLoadedFlag = false;
 let permissionValidateFunction = (
@@ -8,6 +8,8 @@ let permissionValidateFunction = (
   permission: Permission,
   ...args: unknown[]
 ) => Promise.resolve(true);
+
+export type PermissionTree = Record<string, Permission>;
 
 export function registerPermissionValidateFunction(
   validateFunction: (
