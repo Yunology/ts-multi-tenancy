@@ -4,9 +4,7 @@ import { injectPermissionToRuntimeTenant } from '../helper';
 
 export type ConfigTree = Record<string | symbol, any>;
 
-export abstract class Service<
-  C extends ConfigTree = {},
-> {
+export abstract class Service<C extends ConfigTree = {}> {
   protected tenant!: RuntimeTenant;
   protected config!: C;
 
@@ -23,7 +21,8 @@ export abstract class Service<
 
     Object.keys(this.config).forEach((key: keyof C) => {
       this.config[key] = this.tenant.getConfig<C[typeof key]>(
-        key as string, this.config[key],
+        key as string,
+        this.config[key],
       );
     });
 

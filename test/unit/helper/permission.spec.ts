@@ -1,7 +1,11 @@
 // test/unit/helper/permission.spec.ts
 import { expect } from 'chai';
 
-import { filterInvalidPermission, SetupPermission, PermissionTree } from 'helper';
+import {
+  filterInvalidPermission,
+  SetupPermission,
+  PermissionTree,
+} from 'helper';
 import { Permission, RuntimeTenant, Service, TenantPlanInfo } from 'index';
 
 describe('Helper Permission', () => {
@@ -26,11 +30,11 @@ describe('Helper Permission', () => {
 
       class AService {}
 
-      expect(() => SetupPermission<APermission>({
-        A: new Permission(0x0001, 'A', ''),
-      })(AService)).to.throw(
-        `SetupPermission can only use at Service's child classes.`,
-      );
+      expect(() =>
+        SetupPermission<APermission>({
+          A: new Permission(0x0001, 'A', ''),
+        })(AService),
+      ).to.throw(`SetupPermission can only use at Service's child classes.`);
     });
 
     it('Should contain permissions in runtime tenant', async () => {
@@ -54,9 +58,9 @@ describe('Helper Permission', () => {
       );
       const service = new BService();
       await service.init(rt);
-      expect(rt.getPermissions
-        .some((per) => rt.isPermissionMatched(per, 0x0001))).to.be.true;
+      expect(
+        rt.getPermissions.some((per) => rt.isPermissionMatched(per, 0x0001)),
+      ).to.be.true;
     });
   });
-
 });

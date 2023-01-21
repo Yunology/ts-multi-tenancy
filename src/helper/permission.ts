@@ -39,10 +39,14 @@ export function filterInvalidPermission(
   });
 }
 
-export function SetupPermission<P extends PermissionTree>(permission: P): ClassDecorator {
+export function SetupPermission<P extends PermissionTree>(
+  permission: P,
+): ClassDecorator {
   return (target: any) => {
     if (!(new target() instanceof Service)) {
-      throw new Error(`SetupPermission can only use at Service's child classes.`);
+      throw new Error(
+        `SetupPermission can only use at Service's child classes.`,
+      );
     }
 
     const toSetPermission = Reflect.hasMetadata('permission', target)
@@ -88,5 +92,10 @@ export function injectPermissionToRuntimeTenant(
   serviceConstructor: Function,
   rt: RuntimeTenant,
 ): void {
-  rt.insertPermission(Reflect.getMetadata('permission', serviceConstructor) as Record<string, Permission>);
+  rt.insertPermission(
+    Reflect.getMetadata('permission', serviceConstructor) as Record<
+      string,
+      Permission
+    >,
+  );
 }
