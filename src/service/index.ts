@@ -1,4 +1,5 @@
 // src/service/index.ts
+import { extractRuntimeTenantConfig } from '../helper';
 import { Permission, RuntimeTenant } from '../entry';
 
 export type ConfigTree = Record<symbol, any>;
@@ -23,6 +24,10 @@ export abstract class Service<P extends PermissionTree = {}> {
 
   get getTenant(): RuntimeTenant {
     return this.tenant;
+  }
+
+  get config(): <C extends ConfigTree>() => C {
+    return <C extends ConfigTree>() => extractRuntimeTenantConfig<C>(this.constructor, this.tenant);
   }
 }
 

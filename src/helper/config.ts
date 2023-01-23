@@ -1,4 +1,5 @@
 // src/helper/config.ts
+import { RuntimeTenant } from '../entry';
 import { ConfigTree, Service } from '../service';
 
 export function SetupDefaultConfig<C extends ConfigTree>(
@@ -14,4 +15,20 @@ export function SetupDefaultConfig<C extends ConfigTree>(
       : defaultConfig;
     Reflect.defineMetadata('defaultConfig', toSetDefaultConfig, target);
   };
+}
+
+export function extractRuntimeTenantConfig<C extends ConfigTree>(
+  serviceConstructor: Function,
+  rt: RuntimeTenant,
+): C {
+  const configs: Record<string | symbol, any> = {};
+  const defaultConfigs = (Reflect.getMetadata('defaultConfig', serviceConstructor) || {}) as Record<string | symbol, any>;
+  Object.keys(defaultConfigs).forEach((key) => {
+    const defaultConfig = defaultConfigs[key];
+    configs[key] = rt.getConfig<typeof defaultConfig>(key, defaultConfig);
+  });
+  Object.keys(rt.getConfigMap).forEach((key) => {
+    configs[key] = rt.getConfig(key);
+  });
+  return configs as C;
 }
