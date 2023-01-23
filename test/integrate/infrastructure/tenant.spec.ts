@@ -27,16 +27,14 @@ describe('Tenant Infrastructure', () => {
           name: 'name1',
           orgName: 'orgName1',
           activate: true,
-          database: db,
-          config: {},
+          config: { database: db.id },
           plan,
         });
         await manager.getRepository(Tenant).save({
           name: 'name2',
           orgName: 'orgName2',
           activate: true,
-          database: db,
-          config: {},
+          config: { database: db.id },
           plan,
         });
 
@@ -63,8 +61,7 @@ describe('Tenant Infrastructure', () => {
           'name1',
           'orgName1',
           true,
-          db,
-          {},
+          { database: db.id },
           plan,
         );
         expect(inserted.name).to.be.eq('name1');
