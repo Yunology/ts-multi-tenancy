@@ -1,7 +1,7 @@
 // src/service/data_service.ts
 import { EntityManager } from 'typeorm';
 
-import { ConfigTree, PermissionTree, Service } from './service';
+import { PermissionTree, Service } from '.';
 
 export abstract class DataService<
   P extends PermissionTree = {},

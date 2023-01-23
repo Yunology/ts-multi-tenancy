@@ -7,7 +7,7 @@ import { DatabaseInfrastructure } from '../infrastructure';
 import { ProvideConfig, HelperParameter } from '../helper';
 import { createDataSource, getSystemDataSource } from '../datasource';
 
-import { ConfigTree, Service } from './service';
+import { ConfigTree, Service } from '.';
 
 export interface IDatabaseConfig extends ConfigTree {
   database: string;

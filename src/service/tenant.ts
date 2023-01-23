@@ -10,7 +10,7 @@ import { TenantInfrastructure } from '../infrastructure';
 import { getSystemDataSource } from '../datasource';
 import { getDatabaseService, getPlan } from '..';
 
-import { Service } from './service';
+import { Service } from '.';
 
 export class TenantService {
   private headerName = 'X-TENANT-ID';
