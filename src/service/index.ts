@@ -1,8 +1,4 @@
 // src/service/index.ts
-export * from './data_service';
-export * from './database';
-export * from './tenant';
-
 import { Permission, RuntimeTenant } from '../entry';
 
 export type ConfigTree = Record<symbol, any>;
@@ -29,3 +25,7 @@ export abstract class Service<P extends PermissionTree = {}> {
     return this.tenant;
   }
 }
+
+export * from './data_service';
+export * from './database';
+export * from './tenant';
