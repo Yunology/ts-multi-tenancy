@@ -67,7 +67,7 @@ export class TenantService {
     );
     if (activate) {
       await getDatabaseService().precreateRuntimeTenantProperties(
-        rt, config, schemaName,
+        rt, schemaName,
       );
     }
     return rt;

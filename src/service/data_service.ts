@@ -5,8 +5,7 @@ import { PermissionTree, Service } from '.';
 
 export abstract class DataService<
   P extends PermissionTree = {},
-  C extends ConfigTree = {},
-> extends Service<P, C> {
+> extends Service<P> {
   serialTran<T>(
     runInTransaction: (manager: EntityManager) => Promise<T>,
   ): Promise<T> {

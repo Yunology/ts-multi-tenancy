@@ -4,7 +4,6 @@ import { EntityManager, LoggerOptions } from 'typeorm';
 import { CreateDatabaseDTO } from '../dto';
 import { Database, RuntimeTenant } from '../entry';
 import { DatabaseInfrastructure } from '../infrastructure';
-import { ProvideConfig, HelperParameter } from '../helper';
 import { createDataSource, getSystemDataSource } from '../datasource';
 
 import { ConfigTree, Service } from '.';
@@ -22,13 +21,10 @@ export class DatabaseService extends Service {
     this.dbLogging = dbLogging;
   }
 
-  @ProvideConfig<IDatabaseConfig>(['database'])
   async precreateRuntimeTenantProperties(
-    params: HelperParameter<IDatabaseConfig>,
-    rt: RuntimeTenant,
-    schemaName: string,
+    rt: RuntimeTenant, schemaName: string,
   ): Promise<void> {
-    const database = this.databases[params.configs!.database];
+    const database = this.databases[0]; // TODO
     await rt.precreateSchema(database, schemaName, this.dbLogging);
     await rt.precreateDataSource(database, this.dbLogging);
   }
