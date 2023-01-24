@@ -1,11 +1,10 @@
 // src/service/index.ts
 import { RuntimeTenant } from '../entry';
 import {
+  ConfigTree,
   extractRuntimeTenantConfig,
   injectPermissionToRuntimeTenant,
 } from '../helper';
-
-export type ConfigTree = Record<symbol, any>;
 
 export abstract class Service {
   protected tenant!: RuntimeTenant;

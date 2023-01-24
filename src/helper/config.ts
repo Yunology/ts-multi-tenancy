@@ -1,6 +1,8 @@
 // src/helper/config.ts
 import { RuntimeTenant } from '../entry';
-import { ConfigTree, Service } from '../service';
+import { Service } from '../service';
+
+export type ConfigTree = Record<symbol, any>;
 
 export function SetupDefaultConfig<C extends ConfigTree>(
   defaultConfig: C,
