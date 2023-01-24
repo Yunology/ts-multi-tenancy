@@ -17,7 +17,7 @@ export class SystemMigrationRevertCommand implements CommandModule {
         '-d',
         `${cwd()}/${moduleName}/dist/cli_datasource.js`,
       ],
-      {stdio: 'inherit'},
+      { stdio: 'inherit' },
     );
   }
 }

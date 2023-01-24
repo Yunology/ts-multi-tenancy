@@ -7,7 +7,9 @@ export function SetupDefaultConfig<C extends ConfigTree>(
 ): ClassDecorator {
   return (target: any) => {
     if (!(new target() instanceof Service)) {
-      throw new Error(`SetupDefaultConfig can only use at Service's child classes.`);
+      throw new Error(
+        `SetupDefaultConfig can only use at Service's child classes.`,
+      );
     }
 
     const toSetDefaultConfig = Reflect.hasMetadata('defaultConfig', target)
@@ -22,7 +24,10 @@ export function extractRuntimeTenantConfig<C extends ConfigTree>(
   rt: RuntimeTenant,
 ): C {
   const configs: Record<string | symbol, any> = {};
-  const defaultConfigs = (Reflect.getMetadata('defaultConfig', serviceConstructor) || {}) as Record<string | symbol, any>;
+  const defaultConfigs = (Reflect.getMetadata(
+    'defaultConfig',
+    serviceConstructor,
+  ) || {}) as Record<string | symbol, any>;
   Object.keys(defaultConfigs).forEach((key) => {
     const defaultConfig = defaultConfigs[key];
     configs[key] = rt.getConfig<typeof defaultConfig>(key, defaultConfig);

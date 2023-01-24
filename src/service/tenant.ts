@@ -67,7 +67,8 @@ export class TenantService {
     );
     if (activate) {
       await getDatabaseService().precreateRuntimeTenantProperties(
-        rt, schemaName,
+        rt,
+        schemaName,
       );
     }
     return rt;
@@ -84,13 +85,7 @@ export class TenantService {
   async new(dto: CreateTenantDTO): Promise<RuntimeTenant> {
     const ds = getSystemDataSource();
     const cb = async (m: EntityManager): Promise<RuntimeTenant> => {
-      const {
-        name,
-        orgName,
-        activate,
-        config,
-        plan: planString,
-      } = dto;
+      const { name, orgName, activate, config, plan: planString } = dto;
       const plan = getPlan(planString);
       const tenant = await TenantInfrastructure.getInstance().insert(
         m,

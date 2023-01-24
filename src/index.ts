@@ -3,10 +3,7 @@ import 'reflect-metadata';
 import { EntityManager, LoggerOptions } from 'typeorm';
 
 import { Service, DatabaseService, TenantService } from './service';
-import {
-  initRedisDataSource,
-  getSystemDataSource,
-} from './datasource';
+import { initRedisDataSource, getSystemDataSource } from './datasource';
 import {
   DatabaseInfrastructure,
   TenantInfrastructure,

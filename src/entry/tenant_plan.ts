@@ -7,13 +7,13 @@ import { getPlan } from '..';
 
 export class TenantPlanInfo {
   private readonly _schemaName: string;
-  private readonly _modules: Array<{ new(): Service; }>;
+  private readonly _modules: Array<{ new (): Service }>;
   private readonly _entries: Array<Function>;
   private readonly _migrations: Array<Function>;
 
   constructor(
     schemaName: string,
-    modules: Array<{ new(): Service; }>,
+    modules: Array<{ new (): Service }>,
     entries: Array<Function>,
     migrations: Array<Function>,
   ) {
