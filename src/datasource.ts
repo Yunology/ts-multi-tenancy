@@ -8,7 +8,6 @@ import { Tenant, Database } from './entry';
 import {
   TenantInit1668658417786,
   BaseEntityIdField1668675504073,
-  TenantTableRemoveDatabaseField1671975897777,
 } from './migration';
 
 const connectionPools: Record<string, DataSource> = {};
@@ -42,10 +41,7 @@ export function createSystemDataSource(
   return createDataSource('system', 'public', {
     url,
     entities: [Tenant, Database],
-    migrations: [
-      TenantInit1668658417786, BaseEntityIdField1668675504073,
-      TenantTableRemoveDatabaseField1671975897777,
-    ],
+    migrations: [TenantInit1668658417786, BaseEntityIdField1668675504073],
     dropSchema,
     migrationsRun,
     logging,

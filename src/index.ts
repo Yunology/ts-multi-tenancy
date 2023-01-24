@@ -1,8 +1,7 @@
 // src/index.ts
-import 'reflect-metadata';
 import { EntityManager, LoggerOptions } from 'typeorm';
 
-import { Service, DatabaseService, TenantService } from './service';
+import { Service, TenantService } from './service';
 import {
   initRedisDataSource,
   getSystemDataSource,
@@ -15,7 +14,6 @@ import { TenantPlanInfo } from './entry';
 
 let planLoadedFlag = false;
 let infraLoadedFlag = false;
-let databaseService: DatabaseService;
 let tenantService: TenantService;
 let loadedPlans: Record<string, TenantPlanInfo> = {};
 
@@ -63,8 +61,7 @@ export async function initMultiTenancy(
     );
   }
 
-  databaseService = new DatabaseService(tenantDbLogging);
-  tenantService = new TenantService(tenantHaederName);
+  tenantService = new TenantService(tenantHaederName, tenantDbLogging);
   const redisDataSource = await initRedisDataSource();
   const systemDataSource = await getSystemDataSource().initialize();
   await systemDataSource.transaction(
@@ -74,7 +71,7 @@ export async function initMultiTenancy(
       if (preCreateSystemDatasFunction !== undefined) {
         await preCreateSystemDatasFunction(manager);
       }
-      await databaseService.initDatabases(manager);
+      await tenantService.initDatabases(manager);
       await tenantService.precreateTenantries(manager);
       if (preCreateTenantDatasFunction !== undefined) {
         await preCreateTenantDatasFunction();
@@ -82,10 +79,6 @@ export async function initMultiTenancy(
       await tenantService.initlializeTenantries();
     },
   );
-}
-
-export function getDatabaseService(): DatabaseService {
-  return databaseService;
 }
 
 export function getTenantService(): TenantService {

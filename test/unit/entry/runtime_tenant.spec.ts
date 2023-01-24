@@ -13,7 +13,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        { database: '' },
+        {},
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -26,7 +26,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        { database: '' },
+        {},
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -43,7 +43,6 @@ describe('RuntimeTenant Entry', () => {
         true,
         {
           something: 'a value',
-          database: '',
         },
         new TenantPlanInfo('name', [], [], []),
         {},
@@ -59,7 +58,6 @@ describe('RuntimeTenant Entry', () => {
         true,
         {
           something: 'b value',
-          database: '',
         },
         new TenantPlanInfo('name', [], [], []),
         {},
@@ -77,7 +75,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        { database: '' },
+        {},
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -95,7 +93,6 @@ describe('RuntimeTenant Entry', () => {
         true,
         {
           'required-key': 'required value',
-          database: '',
         },
         new TenantPlanInfo('name', [], [], []),
         {},
@@ -111,7 +108,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        { database: '' },
+        {},
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -126,7 +123,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        { database: '' },
+        {},
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -141,7 +138,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        { database: '' },
+        {},
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -162,7 +159,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        { database: '' },
+        {},
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -177,7 +174,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        { database: '' },
+        {},
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -201,7 +198,6 @@ describe('RuntimeTenant Entry', () => {
         'orgName',
         true,
         {
-          database: '',
           allowDomains: [],
         },
         new TenantPlanInfo('name', [], [], []),
@@ -218,7 +214,6 @@ describe('RuntimeTenant Entry', () => {
         'orgName',
         true,
         {
-          database: '',
           allowDomains: ['http://aaa.com'],
         },
         new TenantPlanInfo('name', [], [], []),
@@ -235,7 +230,6 @@ describe('RuntimeTenant Entry', () => {
         'orgName',
         true,
         {
-          database: '',
           allowDomains: ['http://aaa.com', 'http://bbb.com'],
         },
         new TenantPlanInfo('name', [], [], []),
@@ -252,7 +246,6 @@ describe('RuntimeTenant Entry', () => {
         'orgName',
         true,
         {
-          database: '',
           allowDomains: ['http://aaa.com', 'https://bbb.com'],
         },
         new TenantPlanInfo('name', [], [], []),
@@ -269,7 +262,6 @@ describe('RuntimeTenant Entry', () => {
         'orgName',
         true,
         {
-          database: '',
           allowDomains: ['http://aaa.com', 'http://bbb.com'],
         },
         new TenantPlanInfo('name', [], [], []),
@@ -287,7 +279,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        { database: '' },
+        {},
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -305,7 +297,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        { database: '' },
+        {},
         plan,
         {
           [AModule.name]: new AModule(),
@@ -323,7 +315,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        { database: '' },
+        {},
         plan,
         {
           [AModule.name]: new AModule(),
@@ -348,7 +340,7 @@ describe('RuntimeTenant Entry', () => {
             'name',
             'orgName',
             true,
-            { database: '' },
+            {},
             new TenantPlanInfo('test', [], [], []),
             {},
           ).insertPermission({
@@ -373,7 +365,7 @@ describe('RuntimeTenant Entry', () => {
             'name',
             'orgName',
             true,
-            { database: '' },
+            {},
             new TenantPlanInfo('test', [], [], []),
             {},
           ).insertPermission({
@@ -399,7 +391,7 @@ describe('RuntimeTenant Entry', () => {
             'name',
             'orgName',
             true,
-            { database: '' },
+            {},
             new TenantPlanInfo('test', [], [], []),
             {},
           ).insertPermission({
@@ -423,7 +415,7 @@ describe('RuntimeTenant Entry', () => {
       'name',
       'orgName',
       true,
-      { database: '' },
+      {},
       new TenantPlanInfo('name', [], [], []),
       {},
     );
