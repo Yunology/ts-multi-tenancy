@@ -1,11 +1,11 @@
 // src/service/database.ts
-import { EntityManager, LoggerOptions } from 'typeorm';
+import { DataSource, EntityManager, LoggerOptions } from 'typeorm';
 
 import { CreateDatabaseDTO } from '../dto';
 import { ConfigTree } from '../helper';
 import { Database, RuntimeTenant } from '../entry';
 import { DatabaseInfrastructure } from '../infrastructure';
-import { createDataSource, getSystemDataSource } from '../datasource';
+import { createDataSource, getDataSource, getSystemDataSource } from '../datasource';
 
 import { Service } from '.';
 
@@ -22,14 +22,55 @@ export class DatabaseService extends Service {
     this.dbLogging = dbLogging;
   }
 
+  async precreateTenantSchema(
+    { name, url }: Database,
+    schema: string,
+    logging?: LoggerOptions,
+  ) {
+    let systemDb: DataSource | undefined = getDataSource(name);
+    if (systemDb === undefined) {
+      systemDb = createDataSource(name, 'public', { url, logging });
+    }
+
+    if (!systemDb.isInitialized) {
+      await systemDb.initialize();
+    }
+    await systemDb.manager.query(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
+    await systemDb.destroy();
+  }
+
+  async precreateTenantDataSource(
+    rt: RuntimeTenant,
+    { name, url }: Database,
+    logging?: LoggerOptions,
+  ) {
+    const plan = rt.getPlan;
+    const { schemaName, entries, migrations } = plan;
+
+    const dataSource = createDataSource(name, schemaName, {
+      url,
+      entities: entries,
+      migrations,
+      logging,
+    });
+    if (!dataSource.isInitialized) {
+      await dataSource.initialize();
+    }
+    rt.setupDataSource(dataSource);
+  }
+
   async precreateRuntimeTenantProperties(
     rt: RuntimeTenant,
     schemaName: string,
   ): Promise<void> {
     const database =
       this.databases[this.config<IDatabaseConfig>(rt).database];
-    await rt.precreateSchema(database, schemaName, this.dbLogging);
-    await rt.precreateDataSource(database, this.dbLogging);
+    await this.precreateTenantSchema(
+      database, schemaName, this.dbLogging,
+    );
+    await this.precreateTenantDataSource(
+      rt, database, this.dbLogging,
+    );
   }
 
   async initDatabases(manager: EntityManager): Promise<void> {

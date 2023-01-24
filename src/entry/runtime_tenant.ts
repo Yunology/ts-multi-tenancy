@@ -1,13 +1,10 @@
 // src/entry/runtime_tenant.ts
-import { DataSource, LoggerOptions } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { groupBy, isEmpty, isUndefined, omitBy } from 'lodash';
 
 import { Service } from '../service';
-import { Permission, Config } from '.';
-import { getDataSource, createDataSource } from '../datasource';
-
-import { Database } from './database.entry';
 import { TenantPlanInfo } from './tenant_plan';
+import { Permission, Config } from '.';
 
 export class RuntimeTenant {
   private id: string;
@@ -41,38 +38,8 @@ export class RuntimeTenant {
     this.modules = modules;
   }
 
-  async precreateSchema(
-    { name, url }: Database,
-    schema: string,
-    logging?: LoggerOptions,
-  ): Promise<void> {
-    let systemDb: DataSource | undefined = getDataSource(name);
-    if (systemDb === undefined) {
-      systemDb = createDataSource(name, 'public', { url, logging });
-    }
-
-    if (!systemDb.isInitialized) {
-      await systemDb.initialize();
-    }
-    await systemDb.manager.query(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
-    await systemDb.destroy();
-  }
-
-  async precreateDataSource(
-    { name, url }: Database,
-    logging?: LoggerOptions,
-  ): Promise<void> {
-    const { schemaName, entries, migrations } = this.plan;
-
-    this.dataSource = createDataSource(name, schemaName, {
-      url,
-      entities: entries,
-      migrations,
-      logging,
-    });
-    if (!this.dataSource.isInitialized) {
-      await this.dataSource.initialize();
-    }
+  setupDataSource(ds: DataSource) {
+    this.dataSource = ds;
   }
 
   async moduleInitlialize(): Promise<void> {
@@ -83,6 +50,10 @@ export class RuntimeTenant {
 
   async configInitlialize(): Promise<void> {
     this.allowDomains = this.getConfig<Array<string>>('allowDomains', []);
+  }
+
+  get getPlan(): TenantPlanInfo {
+    return this.plan;
   }
 
   get getConfig(): <T>(key: string, defaultValue?: T) => T {
