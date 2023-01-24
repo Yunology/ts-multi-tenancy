@@ -2,11 +2,12 @@
 import { EntityManager, LoggerOptions } from 'typeorm';
 
 import { CreateDatabaseDTO } from '../dto';
+import { ConfigTree } from '../helper';
 import { Database, RuntimeTenant } from '../entry';
 import { DatabaseInfrastructure } from '../infrastructure';
 import { createDataSource, getSystemDataSource } from '../datasource';
 
-import { ConfigTree, Service } from '.';
+import { Service } from '.';
 
 export interface IDatabaseConfig extends ConfigTree {
   database: string;
