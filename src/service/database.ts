@@ -24,7 +24,7 @@ export class DatabaseService extends Service {
   async precreateRuntimeTenantProperties(
     rt: RuntimeTenant, schemaName: string,
   ): Promise<void> {
-    const database = this.databases[this.config<IDatabaseConfig>().database];
+    const database = this.databases[this.config<IDatabaseConfig>(rt).database];
     await rt.precreateSchema(database, schemaName, this.dbLogging);
     await rt.precreateDataSource(database, this.dbLogging);
   }

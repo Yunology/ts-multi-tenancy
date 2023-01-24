@@ -23,8 +23,8 @@ export abstract class Service {
     return this.tenant;
   }
 
-  get config(): <C extends ConfigTree>() => C {
-    return <C extends ConfigTree>() => extractRuntimeTenantConfig<C>(this.constructor, this.tenant);
+  config<C extends ConfigTree>(rt: RuntimeTenant): C {
+    return extractRuntimeTenantConfig<C>(this.constructor, rt);
   }
 }
 
