@@ -114,10 +114,6 @@ export class RuntimeTenant {
     return this.dataSource;
   }
 
-  get getConfigMap(): Record<string | symbol, any> {
-    return this.config;
-  }
-
   get getPermissionMap(): Record<string, Permission> {
     return this.permissions;
   }
