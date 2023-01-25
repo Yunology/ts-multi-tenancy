@@ -3,9 +3,10 @@ import { DataSource, EntityManager, LoggerOptions } from 'typeorm';
 
 import { CreateDatabaseDTO } from '../dto';
 import { ConfigTree } from '../helper';
-import { Database, RuntimeTenant } from '../entry';
+import { Database } from '../entry';
 import { DatabaseInfrastructure } from '../infrastructure';
 import { createDataSource, getDataSource, getSystemDataSource } from '../datasource';
+import { RuntimeTenant } from '../runtime';
 
 import { Service } from '.';
 

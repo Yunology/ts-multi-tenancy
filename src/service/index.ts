@@ -1,5 +1,5 @@
 // src/service/index.ts
-import { RuntimeTenant } from '../entry';
+import { RuntimeTenant } from '../runtime';
 import {
   ConfigTree,
   extractRuntimeTenantConfig,

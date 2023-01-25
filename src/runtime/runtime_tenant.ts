@@ -3,8 +3,7 @@ import { DataSource } from 'typeorm';
 import { groupBy, isEmpty, isUndefined, omitBy } from 'lodash';
 
 import { Service, RuntimeService } from '../service';
-import { TenantPlanInfo } from './tenant_plan';
-import { Permission, Config } from '.';
+import { Permission, Config, TenantPlanInfo } from '../entry';
 
 export class RuntimeTenant {
   private id: string;

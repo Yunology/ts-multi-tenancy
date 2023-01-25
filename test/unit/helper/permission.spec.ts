@@ -6,7 +6,9 @@ import {
   SetupPermission,
   PermissionTree,
 } from 'helper';
-import { Permission, RuntimeTenant, Service, TenantPlanInfo } from 'index';
+import { Permission, TenantPlanInfo } from 'entry';
+
+import { RuntimeTenant, Service } from 'index';
 
 describe('Helper Permission', () => {
   describe('Method filterInvalidPermission', () => {
@@ -52,7 +54,7 @@ describe('Helper Permission', () => {
         'name',
         'orgName',
         true,
-        {},
+        { database: '' },
         new TenantPlanInfo('name', [], [], []),
         {},
       );

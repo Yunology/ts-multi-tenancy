@@ -21,6 +21,7 @@ export * from './entry';
 export * from './helper';
 export * from './infrastructure';
 export * from './service';
+export * from './runtime';
 
 export * from './datasource';
 

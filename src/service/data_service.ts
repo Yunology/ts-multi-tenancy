@@ -1,7 +1,7 @@
 // src/service/data_service.ts
 import { EntityManager } from 'typeorm';
 
-import { RuntimeTenant } from '../entry'
+import { RuntimeTenant } from '../runtime';
 
 import { Service } from '.';
 

@@ -1,5 +1,5 @@
 // src/service/runtime_service.ts
-import { RuntimeTenant } from '../entry';
+import { RuntimeTenant } from '../runtime';
 
 import { Service } from '.';
 

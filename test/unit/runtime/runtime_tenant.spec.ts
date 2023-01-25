@@ -1,7 +1,9 @@
-// test/unit/entry/runtime_tenant.spec.ts
+// test/unit/runtime/runtime_tenant.spec.ts
 import { expect } from 'chai';
 
-import { Permission, RuntimeService, RuntimeTenant, TenantPlanInfo } from 'index';
+import { Permission, TenantPlanInfo } from 'entry';
+import { RuntimeService } from 'service';
+import { RuntimeTenant } from 'runtime';
 
 import { AService } from '../../a_service';
 

@@ -1,6 +1,10 @@
 // test/unit/service/service.spec.ts
 import { expect } from 'chai';
-import { ConfigTree, RuntimeTenant, Service, SetupDefaultConfig, TenantPlanInfo } from 'index';
+
+import { TenantPlanInfo } from 'entry';
+import { SetupDefaultConfig } from 'helper';
+
+import { ConfigTree, RuntimeTenant, Service } from 'index';
 
 describe('Service class', () => {
   describe('Method config', () => {
