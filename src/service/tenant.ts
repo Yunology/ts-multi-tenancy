@@ -7,10 +7,9 @@ import { Tenant } from '../entry';
 import { CreateTenantDTO } from '../dto';
 import { TenantInfrastructure } from '../infrastructure';
 import { getSystemDataSource } from '../datasource';
-import { RuntimeTenant } from '../runtime';
+import { RuntimeService, RuntimeTenant } from '../runtime';
 import { getDatabaseService, getPlan } from '..';
 
-import { RuntimeService } from './runtime_service';
 import { Service } from '.';
 
 export class TenantService {

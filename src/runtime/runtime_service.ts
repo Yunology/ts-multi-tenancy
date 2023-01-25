@@ -1,7 +1,7 @@
 // src/service/runtime_service.ts
-import { RuntimeTenant } from '../runtime';
+import { RuntimeTenant } from './runtime_tenant';
 
-import { Service } from '.';
+import { Service } from '../service';
 
 export class RuntimeService {
   private inited: boolean;

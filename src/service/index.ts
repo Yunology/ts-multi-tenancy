@@ -19,5 +19,4 @@ export abstract class Service {
 
 export * from './data_service';
 export * from './database';
-export * from './runtime_service';
 export * from './tenant';

@@ -1,8 +1,10 @@
-// src/entry/runtime_tenant.ts
+// src/runtime/runtime_tenant.ts
 import { DataSource } from 'typeorm';
 import { groupBy, isEmpty, isUndefined, omitBy } from 'lodash';
 
-import { Service, RuntimeService } from '../service';
+import { RuntimeService } from './runtime_service';
+
+import { Service } from '../service';
 import { Permission, Config, TenantPlanInfo } from '../entry';
 
 export class RuntimeTenant {

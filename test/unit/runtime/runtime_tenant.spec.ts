@@ -2,8 +2,7 @@
 import { expect } from 'chai';
 
 import { Permission, TenantPlanInfo } from 'entry';
-import { RuntimeService } from 'service';
-import { RuntimeTenant } from 'runtime';
+import { RuntimeTenant, RuntimeService } from 'runtime';
 
 import { AService } from '../../a_service';
 
