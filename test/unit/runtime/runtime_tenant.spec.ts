@@ -1,9 +1,10 @@
-// test/unit/entry/runtime_tenant.spec.ts
+// test/unit/runtime/runtime_tenant.spec.ts
 import { expect } from 'chai';
 
-import { Permission, RuntimeTenant, TenantPlanInfo } from 'index';
+import { Permission, TenantPlanInfo } from 'entry';
+import { RuntimeTenant, RuntimeService } from 'runtime';
 
-import { AModule } from '../../a_module';
+import { AService } from '../../a_service';
 
 describe('RuntimeTenant Entry', () => {
   describe('Method getConfig', () => {
@@ -13,7 +14,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        {},
+        { database: '' },
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -26,7 +27,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        {},
+        { database: '' },
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -43,6 +44,7 @@ describe('RuntimeTenant Entry', () => {
         true,
         {
           something: 'a value',
+          database: '',
         },
         new TenantPlanInfo('name', [], [], []),
         {},
@@ -58,6 +60,7 @@ describe('RuntimeTenant Entry', () => {
         true,
         {
           something: 'b value',
+          database: '',
         },
         new TenantPlanInfo('name', [], [], []),
         {},
@@ -75,7 +78,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        {},
+        { database: '' },
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -93,6 +96,7 @@ describe('RuntimeTenant Entry', () => {
         true,
         {
           'required-key': 'required value',
+          database: '',
         },
         new TenantPlanInfo('name', [], [], []),
         {},
@@ -108,7 +112,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        {},
+        { database: '' },
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -123,7 +127,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        {},
+        { database: '' },
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -138,7 +142,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        {},
+        { database: '' },
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -159,7 +163,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        {},
+        { database: '' },
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -174,7 +178,7 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        {},
+        { database: '' },
         new TenantPlanInfo('name', [], [], []),
         {},
       );
@@ -198,6 +202,7 @@ describe('RuntimeTenant Entry', () => {
         'orgName',
         true,
         {
+          database: '',
           allowDomains: [],
         },
         new TenantPlanInfo('name', [], [], []),
@@ -214,6 +219,7 @@ describe('RuntimeTenant Entry', () => {
         'orgName',
         true,
         {
+          database: '',
           allowDomains: ['http://aaa.com'],
         },
         new TenantPlanInfo('name', [], [], []),
@@ -230,6 +236,7 @@ describe('RuntimeTenant Entry', () => {
         'orgName',
         true,
         {
+          database: '',
           allowDomains: ['http://aaa.com', 'http://bbb.com'],
         },
         new TenantPlanInfo('name', [], [], []),
@@ -246,6 +253,7 @@ describe('RuntimeTenant Entry', () => {
         'orgName',
         true,
         {
+          database: '',
           allowDomains: ['http://aaa.com', 'https://bbb.com'],
         },
         new TenantPlanInfo('name', [], [], []),
@@ -262,6 +270,7 @@ describe('RuntimeTenant Entry', () => {
         'orgName',
         true,
         {
+          database: '',
           allowDomains: ['http://aaa.com', 'http://bbb.com'],
         },
         new TenantPlanInfo('name', [], [], []),
@@ -279,14 +288,14 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        {},
+        { database: '' },
         new TenantPlanInfo('name', [], [], []),
         {},
       );
-      expect(() => rt.module(AModule)).to.throw(
+      expect(() => rt.service(AService)).to.throw(
         Error,
-        'Such tenant not allow to use given module' +
-          ' or module is not exists: AModule',
+        'Such tenant not allow to use given service' +
+          ' or service is not exists: AService',
       );
     });
 
@@ -297,15 +306,15 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        {},
+        { database: '' },
         plan,
         {
-          [AModule.name]: new AModule(),
+          [AService.name]: new RuntimeService(new AService()),
         },
       );
-      const module = rt.module(AModule);
+      const module = rt.service(AService);
       expect(module).not.to.be.undefined;
-      expect(module.constructor.name).to.be.eq('AModule');
+      expect(module.constructor.name).to.be.eq('AService');
     });
 
     it('Should get inserted module by class name', () => {
@@ -315,17 +324,17 @@ describe('RuntimeTenant Entry', () => {
         'name',
         'orgName',
         true,
-        {},
+        { database: '' },
         plan,
         {
-          [AModule.name]: new AModule(),
+          [AService.name]: new RuntimeService(new AService()),
         },
       );
-      expect(rt.module('AModule')).not.to.be.undefined;
+      expect(rt.service('AService')).not.to.be.undefined;
 
-      const module = rt.module(AModule);
+      const module = rt.service(AService);
       expect(module).not.to.be.undefined;
-      expect(module.constructor.name).to.be.eq('AModule');
+      expect(module.constructor.name).to.be.eq('AService');
     });
   });
 
@@ -340,7 +349,7 @@ describe('RuntimeTenant Entry', () => {
             'name',
             'orgName',
             true,
-            {},
+            { database: '' },
             new TenantPlanInfo('test', [], [], []),
             {},
           ).insertPermission({
@@ -365,7 +374,7 @@ describe('RuntimeTenant Entry', () => {
             'name',
             'orgName',
             true,
-            {},
+            { database: '' },
             new TenantPlanInfo('test', [], [], []),
             {},
           ).insertPermission({
@@ -391,7 +400,7 @@ describe('RuntimeTenant Entry', () => {
             'name',
             'orgName',
             true,
-            {},
+            { database: '' },
             new TenantPlanInfo('test', [], [], []),
             {},
           ).insertPermission({
@@ -415,7 +424,7 @@ describe('RuntimeTenant Entry', () => {
       'name',
       'orgName',
       true,
-      {},
+      { database: '' },
       new TenantPlanInfo('name', [], [], []),
       {},
     );

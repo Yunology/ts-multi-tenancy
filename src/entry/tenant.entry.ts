@@ -1,8 +1,7 @@
 // src/entry/tenant.entry.ts
-import { Column, Entity, PrimaryColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 import { BaseEntity } from './base_entity';
-import { Database } from './database.entry';
 import { Config } from './config';
 import { TenantPlanInfo, TenantPlanColumn } from './tenant_plan';
 
@@ -16,9 +15,6 @@ export class Tenant extends BaseEntity {
 
   @Column({ type: 'boolean', default: false })
   activate!: boolean;
-
-  @ManyToOne(() => Database)
-  database!: Database;
 
   @Column({ name: 'config', type: 'json', default: {} })
   config!: Config;

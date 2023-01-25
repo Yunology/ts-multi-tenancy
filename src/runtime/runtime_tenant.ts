@@ -1,13 +1,11 @@
-// src/entry/runtime_tenant.ts
-import { DataSource, LoggerOptions } from 'typeorm';
+// src/runtime/runtime_tenant.ts
+import { DataSource } from 'typeorm';
 import { groupBy, isEmpty, isUndefined, omitBy } from 'lodash';
 
-import { Service } from '../service';
-import { Permission, Config } from '.';
-import { getDataSource, createDataSource } from '../datasource';
+import { RuntimeService } from './runtime_service';
 
-import { Database } from './database.entry';
-import { TenantPlanInfo } from './tenant_plan';
+import { Service } from '../service';
+import { Permission, Config, TenantPlanInfo } from '../entry';
 
 export class RuntimeTenant {
   private id: string;
@@ -17,7 +15,7 @@ export class RuntimeTenant {
   private config: Config;
   private plan: TenantPlanInfo;
   private dataSource!: DataSource;
-  private modules: Record<string, Service>;
+  private runtimeServices: Record<string, RuntimeService>;
   private permissions: { [key: string]: Permission } = {
     ROOT: new Permission(0xffff, 'ROOT', '管理員權限'),
   };
@@ -30,7 +28,7 @@ export class RuntimeTenant {
     activate: boolean,
     config: Config,
     plan: TenantPlanInfo,
-    modules: Record<string, Service>,
+    runtimeServices: Record<string, RuntimeService>,
   ) {
     this.id = id;
     this.name = name;
@@ -38,51 +36,25 @@ export class RuntimeTenant {
     this.activate = activate;
     this.config = config;
     this.plan = plan;
-    this.modules = modules;
+    this.runtimeServices = runtimeServices;
   }
 
-  async precreateSchema(
-    { name, url }: Database,
-    schema: string,
-    logging?: LoggerOptions,
-  ): Promise<void> {
-    let systemDb: DataSource | undefined = getDataSource(name);
-    if (systemDb === undefined) {
-      systemDb = createDataSource(name, 'public', { url, logging });
-    }
-
-    if (!systemDb.isInitialized) {
-      await systemDb.initialize();
-    }
-    await systemDb.manager.query(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
-    await systemDb.destroy();
+  setupDataSource(ds: DataSource) {
+    this.dataSource = ds;
   }
 
-  async precreateDataSource(
-    { name, url }: Database,
-    logging?: LoggerOptions,
-  ): Promise<void> {
-    const { schemaName, entries, migrations } = this.plan;
-
-    this.dataSource = createDataSource(name, schemaName, {
-      url,
-      entities: entries,
-      migrations,
-      logging,
-    });
-    if (!this.dataSource.isInitialized) {
-      await this.dataSource.initialize();
-    }
-  }
-
-  async moduleInitlialize(): Promise<void> {
-    for (const module of Object.values(this.modules)) {
-      await module.init(this);
+  async runtimeServiceInitlialize(): Promise<void> {
+    for (const rs of Object.values(this.runtimeServices)) {
+      rs.initService(this);
     }
   }
 
   async configInitlialize(): Promise<void> {
     this.allowDomains = this.getConfig<Array<string>>('allowDomains', []);
+  }
+
+  get getPlan(): TenantPlanInfo {
+    return this.plan;
   }
 
   get getConfig(): <T>(key: string, defaultValue?: T) => T {
@@ -114,6 +86,10 @@ export class RuntimeTenant {
     return this.dataSource;
   }
 
+  get getConfigMap(): Record<string | symbol, any> {
+    return this.config;
+  }
+
   get getPermissionMap(): Record<string, Permission> {
     return this.permissions;
   }
@@ -126,16 +102,16 @@ export class RuntimeTenant {
     return (origin: string) => this.allowDomains.includes(origin);
   }
 
-  module<T extends Service>(t: (new (...args: any[]) => T) | string): T {
+  service<T extends Service>(t: (new (...args: any[]) => T) | string): T {
     const name = typeof t === 'string' ? t : t.name;
-    const found = this.modules[name];
+    const found = this.runtimeServices[name];
     if (isUndefined(found)) {
       throw new Error(
-        'Such tenant not allow to use given module' +
-          ` or module is not exists: ${name}`,
+        'Such tenant not allow to use given service' +
+          ` or service is not exists: ${name}`,
       );
     }
-    return found as T;
+    return found.getService as T;
   }
 
   private examinePermissionDuplicate(): Record<number, Array<Permission>> {

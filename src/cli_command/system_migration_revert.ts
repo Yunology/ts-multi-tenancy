@@ -1,7 +1,7 @@
 // src/cli_command/system_migration_revert.ts
 import { Arguments, CommandModule } from 'yargs';
-import { exec } from 'shelljs';
 import { cwd } from 'process';
+import { spawn } from 'child_process';
 
 export class SystemMigrationRevertCommand implements CommandModule {
   command = 'revert';
@@ -9,8 +9,15 @@ export class SystemMigrationRevertCommand implements CommandModule {
 
   async handler(_: Arguments) {
     const moduleName = 'node_modules/@yunology/ts-multi-tenancy';
-    exec(
-      `yarn typeorm migration:revert -d ${cwd()}/${moduleName}/dist/cli_datasource.js`,
+    spawn(
+      'yarn',
+      [
+        'typeorm',
+        'migration:revert',
+        '-d',
+        `${cwd()}/${moduleName}/dist/cli_datasource.js`,
+      ],
+      { stdio: 'inherit' },
     );
   }
 }

@@ -1,29 +1,24 @@
 // src/service/tenant.ts
-import { EntityManager, LoggerOptions } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { Request } from 'express';
-import { cloneDeep, isUndefined } from 'lodash';
+import isUndefined from 'lodash/isUndefined';
 
-import { Tenant, RuntimeTenant, Database } from '../entry';
-import { CreateTenantDTO, CreateDatabaseDTO } from '../dto';
-import {
-  DatabaseInfrastructure,
-  TenantInfrastructure,
-} from '../infrastructure';
-import { createDataSource, getSystemDataSource } from '../datasource';
-import { getPlan } from '..';
+import { Tenant } from '../entry';
+import { CreateTenantDTO } from '../dto';
+import { TenantInfrastructure } from '../infrastructure';
+import { getSystemDataSource } from '../datasource';
+import { RuntimeService, RuntimeTenant } from '../runtime';
+import { getDatabaseService, getPlan } from '..';
 
-import { Service } from './service';
+import { Service } from '.';
 
 export class TenantService {
   private headerName = 'X-TENANT-ID';
   private loadedModules: Record<string, Service> = {};
-  private databases: Record<string, Database> = {};
   private runtimeTenants: Record<string, RuntimeTenant> = {};
-  private dbLogging: LoggerOptions | undefined;
 
-  constructor(headerName?: string, dbLogging?: LoggerOptions) {
+  constructor(headerName?: string) {
     this.headerName = headerName || this.headerName;
-    this.dbLogging = dbLogging;
   }
 
   get tenantHeaderName(): string {
@@ -36,22 +31,8 @@ export class TenantService {
     this.loadedModules = await callback();
   }
 
-  async initDatabases(manager: EntityManager): Promise<void> {
-    const dbs = await manager.getRepository(Database).find();
-    for (const db of dbs) {
-      createDataSource(db.name, 'public', {
-        url: db.url,
-        logging: this.dbLogging,
-      });
-      this.databases[db.id] = db;
-    }
-  }
-
   async precreateTenantries(manager: EntityManager): Promise<void> {
-    const tenants = await manager.getRepository(Tenant).find({
-      where: {},
-      relations: { database: true },
-    });
+    const tenants = await manager.getRepository(Tenant).find({ where: {} });
     for (const tenant of tenants) {
       const runtimeTenant = await this.precreateTenant(tenant);
       this.runtimeTenants[tenant.id] = runtimeTenant;
@@ -60,19 +41,19 @@ export class TenantService {
 
   async initlializeTenantries(): Promise<void> {
     for (const tenant of Object.values(this.runtimeTenants)) {
-      await tenant.moduleInitlialize();
+      await tenant.runtimeServiceInitlialize();
       await tenant.configInitlialize();
     }
   }
 
   async precreateTenant(tenant: Tenant): Promise<RuntimeTenant> {
-    const { id, name, orgName, activate, database, config } = tenant;
+    const { id, name, orgName, activate, config } = tenant;
     const { plan } = tenant;
     const { schemaName, modulesName } = plan;
-    const modules = Object.assign(
+    const runtimeServices = Object.assign(
       {},
       ...modulesName.map((eachModuleName) => ({
-        [eachModuleName]: cloneDeep(this.loadedModules[eachModuleName]),
+        [eachModuleName]: new RuntimeService(this.loadedModules[eachModuleName]),
       })),
     );
     const rt = new RuntimeTenant(
@@ -82,34 +63,15 @@ export class TenantService {
       activate,
       config,
       plan,
-      modules,
+      runtimeServices,
     );
     if (activate) {
-      await rt.precreateSchema(database, schemaName, this.dbLogging);
-      await rt.precreateDataSource(database, this.dbLogging);
+      await getDatabaseService().precreateRuntimeTenantProperties(
+        rt,
+        schemaName,
+      );
     }
     return rt;
-  }
-
-  async newDatabase(dto: CreateDatabaseDTO): Promise<Database> {
-    const ds = getSystemDataSource();
-    const cb = async (m: EntityManager): Promise<Database> => {
-      const { name: dtoName, url: dtoUrl } = dto;
-      const database = await DatabaseInfrastructure.getInstance().insert(
-        m,
-        dtoName,
-        dtoUrl,
-      );
-      const { id, name, url } = database;
-      createDataSource(name, 'public', { url, logging: this.dbLogging });
-      this.databases[id] = database;
-      return database;
-    };
-    return ds.manager.transaction('SERIALIZABLE', cb);
-  }
-
-  async listDatabases(): Promise<Array<Database>> {
-    return Object.values(this.databases);
   }
 
   get(tenantName: string | undefined): RuntimeTenant | undefined {
@@ -123,27 +85,18 @@ export class TenantService {
   async new(dto: CreateTenantDTO): Promise<RuntimeTenant> {
     const ds = getSystemDataSource();
     const cb = async (m: EntityManager): Promise<RuntimeTenant> => {
-      const {
-        name,
-        orgName,
-        activate,
-        database: dbId,
-        config,
-        plan: planString,
-      } = dto;
+      const { name, orgName, activate, config, plan: planString } = dto;
       const plan = getPlan(planString);
-      const database = this.databases[dbId];
       const tenant = await TenantInfrastructure.getInstance().insert(
         m,
         name,
         orgName,
         activate,
-        database,
         config,
         plan,
       );
       const runtimeTenant = await this.precreateTenant(tenant);
-      await runtimeTenant.moduleInitlialize();
+      await runtimeTenant.runtimeServiceInitlialize();
       await runtimeTenant.configInitlialize();
       this.runtimeTenants[tenant.id] = runtimeTenant;
       return runtimeTenant;

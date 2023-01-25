@@ -2,6 +2,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2020,
+    project: './tsconfig.json',
   },
   env: {
     mocha: true,
@@ -12,9 +13,6 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
   ],
-  parserOptions: {
-    project: './tsconfig.json',
-  },
   plugins: [
     'import',
     '@typescript-eslint',

@@ -2,22 +2,17 @@
 import { DataSource, LoggerOptions } from 'typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { createClient, RedisClientType } from 'redis';
-import session from 'express-session';
-import connectRedis, { RedisStore } from 'connect-redis';
 
 // Tenant entitires & migrations
 import { Tenant, Database } from './entry';
 import {
   TenantInit1668658417786,
   BaseEntityIdField1668675504073,
+  TenantTableRemoveDatabaseField1671975897777,
 } from './migration';
-
-const RedisStore = connectRedis(session);
 
 const connectionPools: Record<string, DataSource> = {};
 let redisDataSource: RedisClientType;
-let sessionStore: RedisStore;
-let sessionRedis: RedisClientType;
 
 export function createDataSource(
   dbName: string,
@@ -47,7 +42,11 @@ export function createSystemDataSource(
   return createDataSource('system', 'public', {
     url,
     entities: [Tenant, Database],
-    migrations: [TenantInit1668658417786, BaseEntityIdField1668675504073],
+    migrations: [
+      TenantInit1668658417786,
+      BaseEntityIdField1668675504073,
+      TenantTableRemoveDatabaseField1671975897777,
+    ],
     dropSchema,
     migrationsRun,
     logging,
@@ -81,16 +80,6 @@ export function createRedisDataSource(url: string): RedisClientType {
   return redisDataSource;
 }
 
-export function createSessionRedisStore(url: string): RedisClientType {
-  if (sessionRedis !== undefined) {
-    throw new Error('SessionRedis is already created.');
-  }
-
-  sessionRedis = createClient({ url, legacyMode: true });
-  sessionStore = new RedisStore({ client: sessionRedis });
-  return sessionRedis;
-}
-
 export async function initRedisDataSource(): Promise<RedisClientType> {
   if (redisDataSource !== undefined) {
     await redisDataSource.connect();
@@ -98,17 +87,6 @@ export async function initRedisDataSource(): Promise<RedisClientType> {
   return redisDataSource;
 }
 
-export async function initSessionRedisStore(): Promise<RedisStore> {
-  if (sessionRedis !== undefined) {
-    await sessionRedis.connect();
-  }
-  return sessionStore;
-}
-
 export function getRedisDataSource(): RedisClientType {
   return redisDataSource;
-}
-
-export function getSessionRedisStore(): RedisStore {
-  return sessionStore;
 }
