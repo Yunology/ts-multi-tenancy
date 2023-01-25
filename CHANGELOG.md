@@ -1,45 +1,69 @@
-## [v0.0.8](https://github.com/Yunology/ts-multi-tenancy/releases/tag/v0.0.8)  -  2023-01-20
-### Added
-- cli for ts-multi-tenancy & regular migration management.
-- Publish packages to npm.
+# Changelog
+## [v0.0.8](https://github.com/yunology/ts-multi-tenancy/tree/v0.0.8) (2023-01-19)
 
-## [v0.0.7](https://github.com/Yunology/ts-multi-tenancy/releases/tag/v0.0.7)  -  2023-01-17
-### Added
-- Open source with MIT license.
+[Full Changelog](https://github.com/yunology/ts-multi-tenancy/compare/v0.0.7...v0.0.8)
 
-## [v0.0.6](https://github.com/Yunology/ts-multi-tenancy/releases/tag/v0.0.6)  -  2022-12-30
-### Fixed
-- Incorrect module type @ TenantPlanInfo cause init error at invoker.
+**Merged pull requests:**
 
-## [v0.0.5](https://github.com/Yunology/ts-multi-tenancy/releases/tag/v0.0.4)  -  2022-12-20
-### Added
-- Permission & Config generic type @ Service & DataService.
-### Fixed
-- Broken Service#clone method, replace to old one.
+- Feat/cli [\#17](https://github.com/Yunology/ts-multi-tenancy/pull/17) ([jackey8616](https://github.com/jackey8616))
+- Feat/npm publish [\#16](https://github.com/Yunology/ts-multi-tenancy/pull/16) ([jackey8616](https://github.com/jackey8616))
 
-## [v0.0.4](https://github.com/Yunology/ts-multi-tenancy/releases/tag/v0.0.4)  -  2022-12-04
-### Fixed
-- Tenant not init when create.(#10)
+## [v0.0.7](https://github.com/yunology/ts-multi-tenancy/tree/v0.0.7) (2023-01-17)
 
-## [v0.0.3](https://github.com/Yunology/ts-multi-tenancy/releases/tag/v0.0.3)  -  2022-11-26
-### Added
-- Auth helper for SignInRequire decorator.(#8)
-- Permission helper for PermissionRequire decorator.(#7)
+[Full Changelog](https://github.com/yunology/ts-multi-tenancy/compare/v0.0.6...v0.0.7)
 
-## [v0.0.2](https://github.com/Yunology/ts-multi-tenancy/releases/tag/v0.0.2)  -  2022-11-25
-### Added
-- LoggerOptions to every DataSources.
-- UUID @ BaseEntity.
-- allowDomains mechanism in RuntimeTenant.
-- tenantMiddleware for module use.
-- TenantEntity for module to add tenant labeled data in database.(#4)
+**Merged pull requests:**
 
-### Misc
-- Flatten Tenant data in RuntimeTenant.(#2)
-- Remove Infrastructure#getManyByIds since it can do with getMany method.(#3)
+- Feat/open source [\#15](https://github.com/Yunology/ts-multi-tenancy/pull/15) ([jackey8616](https://github.com/jackey8616))
 
-### Fixed
-- Incorrect Infrastructure#update logic.(#4)
+## [v0.0.6](https://github.com/yunology/ts-multi-tenancy/tree/v0.0.6) (2022-12-29)
 
-## [v0.0.1](https://github.com/Yunology/ts-multi-tenancy/releases/tag/v0.0.1)  -  2022-11-16
-Init of whole project, including first version of Multi-Tenancy.
+[Full Changelog](https://github.com/yunology/ts-multi-tenancy/compare/v0.0.5...v0.0.6)
+
+## [v0.0.5](https://github.com/yunology/ts-multi-tenancy/tree/v0.0.5) (2022-12-25)
+
+[Full Changelog](https://github.com/yunology/ts-multi-tenancy/compare/v0.0.4...v0.0.5)
+
+**Merged pull requests:**
+
+- Fix/clone problem at service class [\#14](https://github.com/Yunology/ts-multi-tenancy/pull/14) ([jackey8616](https://github.com/jackey8616))
+- Feat/service config & permission generic type [\#13](https://github.com/Yunology/ts-multi-tenancy/pull/13) ([jackey8616](https://github.com/jackey8616))
+
+## [v0.0.4](https://github.com/yunology/ts-multi-tenancy/tree/v0.0.4) (2022-12-03)
+
+[Full Changelog](https://github.com/yunology/ts-multi-tenancy/compare/v0.0.3...v0.0.4)
+
+**Merged pull requests:**
+
+- Fix/lint [\#12](https://github.com/Yunology/ts-multi-tenancy/pull/12) ([jackey8616](https://github.com/jackey8616))
+- Refactor/eslint [\#11](https://github.com/Yunology/ts-multi-tenancy/pull/11) ([jackey8616](https://github.com/jackey8616))
+- Fix/tenant not init when create [\#10](https://github.com/Yunology/ts-multi-tenancy/pull/10) ([jackey8616](https://github.com/jackey8616))
+- feat: add SignInRequire helper decorator [\#8](https://github.com/Yunology/ts-multi-tenancy/pull/8) ([jackey8616](https://github.com/jackey8616))
+- Feat/permission improvement [\#7](https://github.com/Yunology/ts-multi-tenancy/pull/7) ([jackey8616](https://github.com/jackey8616))
+- Feat/tenant manage entity [\#4](https://github.com/Yunology/ts-multi-tenancy/pull/4) ([jackey8616](https://github.com/jackey8616))
+- Refactor/infrastructure [\#3](https://github.com/Yunology/ts-multi-tenancy/pull/3) ([jackey8616](https://github.com/jackey8616))
+- Feat/domain checking when accessing tenant [\#2](https://github.com/Yunology/ts-multi-tenancy/pull/2) ([jackey8616](https://github.com/jackey8616))
+
+## [v0.0.3](https://github.com/yunology/ts-multi-tenancy/tree/v0.0.3) (2022-11-26)
+
+[Full Changelog](https://github.com/yunology/ts-multi-tenancy/compare/v0.0.2...v0.0.3)
+
+**Merged pull requests:**
+
+- Release: version 0.0.3 [\#9](https://github.com/Yunology/ts-multi-tenancy/pull/9) ([jackey8616](https://github.com/jackey8616))
+
+## [v0.0.2](https://github.com/yunology/ts-multi-tenancy/tree/v0.0.2) (2022-11-25)
+
+[Full Changelog](https://github.com/yunology/ts-multi-tenancy/compare/v0.0.1...v0.0.2)
+
+**Merged pull requests:**
+
+- Release: version 0.0.2 [\#6](https://github.com/Yunology/ts-multi-tenancy/pull/6) ([jackey8616](https://github.com/jackey8616))
+
+## [v0.0.1](https://github.com/yunology/ts-multi-tenancy/tree/v0.0.1) (2022-11-16)
+
+[Full Changelog](https://github.com/yunology/ts-multi-tenancy/compare/6515dffcdd73e331dc423187d121f1135695ffb4...v0.0.1)
+
+
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
