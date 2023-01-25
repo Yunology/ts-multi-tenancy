@@ -2,7 +2,7 @@
 import { DataSource } from 'typeorm';
 import { groupBy, isEmpty, isUndefined, omitBy } from 'lodash';
 
-import { Service } from '../service';
+import { Service, RuntimeService } from '../service';
 import { TenantPlanInfo } from './tenant_plan';
 import { Permission, Config } from '.';
 
@@ -14,7 +14,7 @@ export class RuntimeTenant {
   private config: Config;
   private plan: TenantPlanInfo;
   private dataSource!: DataSource;
-  private modules: Record<string, Service>;
+  private runtimeServices: Record<string, RuntimeService>;
   private permissions: { [key: string]: Permission } = {
     ROOT: new Permission(0xffff, 'ROOT', '管理員權限'),
   };
@@ -27,7 +27,7 @@ export class RuntimeTenant {
     activate: boolean,
     config: Config,
     plan: TenantPlanInfo,
-    modules: Record<string, Service>,
+    runtimeServices: Record<string, RuntimeService>,
   ) {
     this.id = id;
     this.name = name;
@@ -35,16 +35,16 @@ export class RuntimeTenant {
     this.activate = activate;
     this.config = config;
     this.plan = plan;
-    this.modules = modules;
+    this.runtimeServices = runtimeServices;
   }
 
   setupDataSource(ds: DataSource) {
     this.dataSource = ds;
   }
 
-  async moduleInitlialize(): Promise<void> {
-    for (const module of Object.values(this.modules)) {
-      await module.init(this);
+  async runtimeServiceInitlialize(): Promise<void> {
+    for (const rs of Object.values(this.runtimeServices)) {
+      rs.initService(this);
     }
   }
 
@@ -101,16 +101,16 @@ export class RuntimeTenant {
     return (origin: string) => this.allowDomains.includes(origin);
   }
 
-  module<T extends Service>(t: (new (...args: any[]) => T) | string): T {
+  service<T extends Service>(t: (new (...args: any[]) => T) | string): T {
     const name = typeof t === 'string' ? t : t.name;
-    const found = this.modules[name];
+    const found = this.runtimeServices[name];
     if (isUndefined(found)) {
       throw new Error(
-        'Such tenant not allow to use given module' +
-          ` or module is not exists: ${name}`,
+        'Such tenant not allow to use given service' +
+          ` or service is not exists: ${name}`,
       );
     }
-    return found as T;
+    return found.getService as T;
   }
 
   private examinePermissionDuplicate(): Record<number, Array<Permission>> {
