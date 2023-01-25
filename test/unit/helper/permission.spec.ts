@@ -59,7 +59,7 @@ describe('Helper Permission', () => {
         {},
       );
       const service = new BService();
-      await service.init(rt);
+      await service.setupByTenant(rt);
       expect(
         rt.getPermissions.some((per) => rt.isPermissionMatched(per, 0x0001)),
       ).to.be.true;

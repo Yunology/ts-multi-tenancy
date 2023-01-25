@@ -27,7 +27,7 @@ describe('Service class', () => {
       );
 
       const instance = new DefaultConfigClass();
-      await instance.init(rt);
+      await instance.setupByTenant(rt);
       expect(instance.config<DefaultConfig>(rt).num).to.be.eq(1);
     });
 
@@ -50,7 +50,7 @@ describe('Service class', () => {
       );
 
       const instance = new OverwriteDefaultConfigClass();
-      await instance.init(rt);
+      await instance.setupByTenant(rt);
       expect(instance.config<OverwriteDefaultConfig>(rt).num).to.be.eq(8);
     });
 
@@ -77,7 +77,7 @@ describe('Service class', () => {
       );
 
       const instance = new MultipleDefaultConfigClass();
-      await instance.init(rt);
+      await instance.setupByTenant(rt);
       expect(instance.config<DefaultConfigOne>(rt).foo).to.be.eq(1);
       expect(instance.config<DefaultConfigTwo>(rt).bar).to.be.eq('a');
     });
@@ -100,7 +100,7 @@ describe('Service class', () => {
       );
 
       const instance = new EmptyDefaultConfigClass();
-      await instance.init(rt);
+      await instance.setupByTenant(rt);
       expect(instance.config<SomePredefineConfig>(rt).bar).to.be.eq(123);
     });
   });
