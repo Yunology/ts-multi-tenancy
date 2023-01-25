@@ -8,11 +8,6 @@ import {
 
 export abstract class Service {
   async init(runtimeTenant: RuntimeTenant): Promise<Service> {
-    /* TODO: check init status in RuntimeTenant
-    if (this.tenant !== undefined) {
-      throw new Error('Service is inited with tenant.');
-    }
-    */
     injectPermissionToRuntimeTenant(this.constructor, runtimeTenant);
     return this;
   }
