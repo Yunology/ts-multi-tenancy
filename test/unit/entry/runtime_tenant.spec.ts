@@ -1,9 +1,9 @@
 // test/unit/entry/runtime_tenant.spec.ts
 import { expect } from 'chai';
 
-import { Permission, RuntimeTenant, TenantPlanInfo } from 'index';
+import { Permission, RuntimeService, RuntimeTenant, TenantPlanInfo } from 'index';
 
-import { AModule } from '../../a_module';
+import { AService } from '../../a_service';
 
 describe('RuntimeTenant Entry', () => {
   describe('Method getConfig', () => {
@@ -291,10 +291,10 @@ describe('RuntimeTenant Entry', () => {
         new TenantPlanInfo('name', [], [], []),
         {},
       );
-      expect(() => rt.module(AModule)).to.throw(
+      expect(() => rt.service(AService)).to.throw(
         Error,
-        'Such tenant not allow to use given module' +
-          ' or module is not exists: AModule',
+        'Such tenant not allow to use given service' +
+          ' or service is not exists: AService',
       );
     });
 
@@ -308,12 +308,12 @@ describe('RuntimeTenant Entry', () => {
         { database: '' },
         plan,
         {
-          [AModule.name]: new AModule(),
+          [AService.name]: new RuntimeService(new AService()),
         },
       );
-      const module = rt.module(AModule);
+      const module = rt.service(AService);
       expect(module).not.to.be.undefined;
-      expect(module.constructor.name).to.be.eq('AModule');
+      expect(module.constructor.name).to.be.eq('AService');
     });
 
     it('Should get inserted module by class name', () => {
@@ -326,14 +326,14 @@ describe('RuntimeTenant Entry', () => {
         { database: '' },
         plan,
         {
-          [AModule.name]: new AModule(),
+          [AService.name]: new RuntimeService(new AService()),
         },
       );
-      expect(rt.module('AModule')).not.to.be.undefined;
+      expect(rt.service('AService')).not.to.be.undefined;
 
-      const module = rt.module(AModule);
+      const module = rt.service(AService);
       expect(module).not.to.be.undefined;
-      expect(module.constructor.name).to.be.eq('AModule');
+      expect(module.constructor.name).to.be.eq('AService');
     });
   });
 
