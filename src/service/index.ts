@@ -7,19 +7,14 @@ import {
 } from '../helper';
 
 export abstract class Service {
-  protected tenant!: RuntimeTenant;
-
-  async init(tenant: RuntimeTenant): Promise<Service> {
+  async init(runtimeTenant: RuntimeTenant): Promise<Service> {
+    /* TODO: check init status in RuntimeTenant
     if (this.tenant !== undefined) {
       throw new Error('Service is inited with tenant.');
     }
-    this.tenant = tenant;
-    injectPermissionToRuntimeTenant(this.constructor, this.tenant);
+    */
+    injectPermissionToRuntimeTenant(this.constructor, runtimeTenant);
     return this;
-  }
-
-  get getTenant(): RuntimeTenant {
-    return this.tenant;
   }
 
   config<C extends ConfigTree>(rt: RuntimeTenant): C {
