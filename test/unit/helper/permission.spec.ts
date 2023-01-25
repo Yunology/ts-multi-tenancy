@@ -6,7 +6,9 @@ import {
   SetupPermission,
   PermissionTree,
 } from 'helper';
-import { Permission, RuntimeTenant, Service, TenantPlanInfo } from 'index';
+import { Permission, TenantPlanInfo } from 'entry';
+
+import { RuntimeTenant, Service } from 'index';
 
 describe('Helper Permission', () => {
   describe('Method filterInvalidPermission', () => {
@@ -52,12 +54,12 @@ describe('Helper Permission', () => {
         'name',
         'orgName',
         true,
-        {},
+        { database: '' },
         new TenantPlanInfo('name', [], [], []),
         {},
       );
       const service = new BService();
-      await service.init(rt);
+      await service.setupByTenant(rt);
       expect(
         rt.getPermissions.some((per) => rt.isPermissionMatched(per, 0x0001)),
       ).to.be.true;

@@ -1,5 +1,5 @@
 // src/helper/config.ts
-import { RuntimeTenant } from '../entry';
+import { RuntimeTenant } from '../runtime';
 import { Service } from '../service';
 
 export type ConfigTree = Record<symbol, any>;

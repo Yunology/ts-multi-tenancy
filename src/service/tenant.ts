@@ -1,13 +1,13 @@
 // src/service/tenant.ts
 import { EntityManager } from 'typeorm';
 import { Request } from 'express';
-import cloneDeep from 'lodash/cloneDeep';
 import isUndefined from 'lodash/isUndefined';
 
-import { Tenant, RuntimeTenant } from '../entry';
+import { Tenant } from '../entry';
 import { CreateTenantDTO } from '../dto';
 import { TenantInfrastructure } from '../infrastructure';
 import { getSystemDataSource } from '../datasource';
+import { RuntimeService, RuntimeTenant } from '../runtime';
 import { getDatabaseService, getPlan } from '..';
 
 import { Service } from '.';
@@ -41,7 +41,7 @@ export class TenantService {
 
   async initlializeTenantries(): Promise<void> {
     for (const tenant of Object.values(this.runtimeTenants)) {
-      await tenant.moduleInitlialize();
+      await tenant.runtimeServiceInitlialize();
       await tenant.configInitlialize();
     }
   }
@@ -50,10 +50,10 @@ export class TenantService {
     const { id, name, orgName, activate, config } = tenant;
     const { plan } = tenant;
     const { schemaName, modulesName } = plan;
-    const modules = Object.assign(
+    const runtimeServices = Object.assign(
       {},
       ...modulesName.map((eachModuleName) => ({
-        [eachModuleName]: cloneDeep(this.loadedModules[eachModuleName]),
+        [eachModuleName]: new RuntimeService(this.loadedModules[eachModuleName]),
       })),
     );
     const rt = new RuntimeTenant(
@@ -63,7 +63,7 @@ export class TenantService {
       activate,
       config,
       plan,
-      modules,
+      runtimeServices,
     );
     if (activate) {
       await getDatabaseService().precreateRuntimeTenantProperties(
@@ -96,7 +96,7 @@ export class TenantService {
         plan,
       );
       const runtimeTenant = await this.precreateTenant(tenant);
-      await runtimeTenant.moduleInitlialize();
+      await runtimeTenant.runtimeServiceInitlialize();
       await runtimeTenant.configInitlialize();
       this.runtimeTenants[tenant.id] = runtimeTenant;
       return runtimeTenant;

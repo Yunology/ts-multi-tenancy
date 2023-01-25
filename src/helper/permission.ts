@@ -1,5 +1,6 @@
 // src/helper/permission.ts
-import { Permission, RuntimeTenant } from '../entry';
+import { RuntimeTenant } from '../runtime';
+import { Permission } from '../entry';
 import { Service } from '../service';
 
 let permissionValidateFunctionLoadedFlag = false;

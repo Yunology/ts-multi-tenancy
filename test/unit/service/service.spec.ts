@@ -1,6 +1,10 @@
 // test/unit/service/service.spec.ts
 import { expect } from 'chai';
-import { ConfigTree, RuntimeTenant, Service, SetupDefaultConfig, TenantPlanInfo } from 'index';
+
+import { TenantPlanInfo } from 'entry';
+import { SetupDefaultConfig } from 'helper';
+
+import { ConfigTree, RuntimeTenant, Service } from 'index';
 
 describe('Service class', () => {
   describe('Method config', () => {
@@ -23,10 +27,8 @@ describe('Service class', () => {
       );
 
       const instance = new DefaultConfigClass();
-      await instance.init(rt);
-      expect(instance.config<DefaultConfig>(
-        instance.getTenant,
-      ).num).to.be.eq(1);
+      await instance.setupByTenant(rt);
+      expect(instance.config<DefaultConfig>(rt).num).to.be.eq(1);
     });
 
     it('Default config and overwrite with RuntimeTenant config', async () => {
@@ -48,10 +50,8 @@ describe('Service class', () => {
       );
 
       const instance = new OverwriteDefaultConfigClass();
-      await instance.init(rt);
-      expect(instance.config<OverwriteDefaultConfig>(
-        instance.getTenant,
-      ).num).to.be.eq(8);
+      await instance.setupByTenant(rt);
+      expect(instance.config<OverwriteDefaultConfig>(rt).num).to.be.eq(8);
     });
 
     it('Setup multiple default configs', async () => {
@@ -77,13 +77,9 @@ describe('Service class', () => {
       );
 
       const instance = new MultipleDefaultConfigClass();
-      await instance.init(rt);
-      expect(instance.config<DefaultConfigOne>(
-        instance.getTenant,
-      ).foo).to.be.eq(1);
-      expect(instance.config<DefaultConfigTwo>(
-        instance.getTenant,
-      ).bar).to.be.eq('a');
+      await instance.setupByTenant(rt);
+      expect(instance.config<DefaultConfigOne>(rt).foo).to.be.eq(1);
+      expect(instance.config<DefaultConfigTwo>(rt).bar).to.be.eq('a');
     });
 
     it('Empty default config and load RuntimeTenant config', async () => {
@@ -104,10 +100,8 @@ describe('Service class', () => {
       );
 
       const instance = new EmptyDefaultConfigClass();
-      await instance.init(rt);
-      expect(instance.config<SomePredefineConfig>(
-        instance.getTenant,
-      ).bar).to.be.eq(123);
+      await instance.setupByTenant(rt);
+      expect(instance.config<SomePredefineConfig>(rt).bar).to.be.eq(123);
     });
   });
 });

@@ -1,25 +1,27 @@
 // src/service/index.ts
-import { RuntimeTenant } from '../entry';
+import { RuntimeTenant } from '../runtime';
 import {
   ConfigTree,
   extractRuntimeTenantConfig,
   injectPermissionToRuntimeTenant,
 } from '../helper';
 
+/**
+ * Use to wrap the business logics.
+ * This class is manage by TenantService including initialization.
+ * If you want to initialize it, make sure what are you doing.
+ *
+ * Members in this class will share to all used Services.
+ * Do not put any state members in here.
+ */
 export abstract class Service {
-  protected tenant!: RuntimeTenant;
-
-  async init(tenant: RuntimeTenant): Promise<Service> {
-    if (this.tenant !== undefined) {
-      throw new Error('Service is inited with tenant.');
-    }
-    this.tenant = tenant;
-    injectPermissionToRuntimeTenant(this.constructor, this.tenant);
+  /**
+   * Use to inject permission into RuntimeTenant and some setup for Service.
+   * Like some data pre-create.
+   */
+  async setupByTenant(runtimeTenant: RuntimeTenant): Promise<Service> {
+    injectPermissionToRuntimeTenant(this.constructor, runtimeTenant);
     return this;
-  }
-
-  get getTenant(): RuntimeTenant {
-    return this.tenant;
   }
 
   config<C extends ConfigTree>(rt: RuntimeTenant): C {
