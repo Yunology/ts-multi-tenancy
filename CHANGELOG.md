@@ -1,4 +1,23 @@
 # Changelog
+
+## [Unreleased](https://github.com/yunology/ts-multi-tenancy/tree/HEAD)
+
+[Full Changelog](https://github.com/yunology/ts-multi-tenancy/compare/v0.0.8...HEAD)
+
+**Closed issues:**
+
+- cli command `tsmt migration:generate` is broken [\#18](https://github.com/Yunology/ts-multi-tenancy/issues/18)
+
+**Merged pull requests:**
+
+- Refactor/by chatgpt [\#25](https://github.com/Yunology/ts-multi-tenancy/pull/25) ([jackey8616](https://github.com/jackey8616))
+- Refactor/config processing flow [\#24](https://github.com/Yunology/ts-multi-tenancy/pull/24) ([jackey8616](https://github.com/jackey8616))
+- Revert "Refactor/config processing flow" [\#23](https://github.com/Yunology/ts-multi-tenancy/pull/23) ([jackey8616](https://github.com/jackey8616))
+- Refactor/config processing flow [\#22](https://github.com/Yunology/ts-multi-tenancy/pull/22) ([jackey8616](https://github.com/jackey8616))
+- Refactor/permission processing flow [\#21](https://github.com/Yunology/ts-multi-tenancy/pull/21) ([jackey8616](https://github.com/jackey8616))
+- Refactor/remove codes should let developer define [\#20](https://github.com/Yunology/ts-multi-tenancy/pull/20) ([jackey8616](https://github.com/jackey8616))
+- Refactor/cli [\#19](https://github.com/Yunology/ts-multi-tenancy/pull/19) ([jackey8616](https://github.com/jackey8616))
+
 ## [v0.0.8](https://github.com/yunology/ts-multi-tenancy/tree/v0.0.8) (2023-01-19)
 
 [Full Changelog](https://github.com/yunology/ts-multi-tenancy/compare/v0.0.7...v0.0.8)
