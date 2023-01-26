@@ -1,15 +1,13 @@
-// test/a_module.ts
+// test/b_service.ts
 import { RuntimeTenant } from 'runtime';
 import { Service } from 'service';
 
-export class AService extends Service {
+export class BService extends Service {
   public initDate!: Date;
 
-  async setupByTenant(rt: RuntimeTenant): Promise<AService> {
+  async setupByTenant(rt: RuntimeTenant): Promise<BService> {
     await super.setupByTenant(rt);
     this.initDate = new Date();
-    await new Promise((resolve) => { setTimeout(resolve, 1000); })
-
     return this;
   }
 }

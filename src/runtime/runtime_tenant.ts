@@ -45,7 +45,7 @@ export class RuntimeTenant {
 
   async runtimeServiceInitlialize(): Promise<void> {
     for (const rs of Object.values(this.runtimeServices)) {
-      rs.initService(this);
+      await rs.initService(this);
     }
   }
 

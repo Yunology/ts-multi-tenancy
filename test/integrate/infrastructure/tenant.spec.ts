@@ -4,22 +4,16 @@ import { EntityManager } from 'typeorm';
 
 import { Database, getPlan, Tenant, TenantInfrastructure } from 'index';
 
-import { autoRollbackTransaction } from '../hook.spec';
+import { conn } from '../hook.spec';
 
 describe('Tenant Infrastructure', () => {
   describe('Method getTenants', () => {
-    it('Should get empty because there is nothing in db', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
-        const dbs = await TenantInfrastructure.getInstance().getTenantries(
+    it('Should get all tenantriess', async () => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
+        const plan = getPlan(conn.getPlanName);
+        const originTenantries = await TenantInfrastructure.getInstance().getTenantries(
           manager,
         );
-        expect(dbs.length).to.be.eq(0);
-      });
-    });
-
-    it('Should get all tenantriess', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
-        const plan = getPlan('TEST-PLAN');
         const db = await manager
           .getRepository(Database)
           .save({ name: 'name1', url: 'url1' });
@@ -38,21 +32,21 @@ describe('Tenant Infrastructure', () => {
           plan,
         });
 
-        const dbs = await TenantInfrastructure.getInstance().getTenantries(
+        const tenantries = await TenantInfrastructure.getInstance().getTenantries(
           manager,
         );
-        expect(dbs.length).to.be.eq(2);
-        expect(dbs.find(({ name }) => name === 'name1')).not.to.be.undefined;
-        expect(dbs.find(({ name }) => name === 'name2')).not.to.be.undefined;
-        expect(dbs.find(({ name }) => name === 'not exists')).to.be.undefined;
+        expect(tenantries.length).to.be.eq(originTenantries.length + 2);
+        expect(tenantries.find(({ name }) => name === 'name1')).not.to.be.undefined;
+        expect(tenantries.find(({ name }) => name === 'name2')).not.to.be.undefined;
+        expect(tenantries.find(({ name }) => name === 'not exists')).to.be.undefined;
       });
     });
   });
 
   describe('Method insert', () => {
     it('Should insert a tenantry', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
-        const plan = getPlan('TEST-PLAN');
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
+        const plan = getPlan(conn.getPlanName);
         const db = await manager
           .getRepository(Database)
           .save({ name: 'name1', url: 'url1' });

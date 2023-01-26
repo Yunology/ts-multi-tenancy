@@ -74,12 +74,12 @@ export class TenantService {
     return rt;
   }
 
-  get(tenantName: string | undefined): RuntimeTenant | undefined {
-    return isUndefined(tenantName)
+  getTenantByInfo(idOrName: string | undefined): RuntimeTenant | undefined {
+    return isUndefined(idOrName)
       ? undefined
-      : Object.values(this.runtimeTenants).find(
-          ({ identityName }) => identityName === tenantName,
-        );
+      : Object.values(this.runtimeTenants).find(({ tenantId, identityName }) =>
+        tenantId === idOrName || identityName === idOrName,
+      );
   }
 
   async new(dto: CreateTenantDTO): Promise<RuntimeTenant> {
@@ -120,6 +120,6 @@ export class TenantService {
 
   getTenantByHeaderFromReqeust(req: Request): RuntimeTenant | undefined {
     const tenantName = req.header(this.headerName);
-    return isUndefined(tenantName) ? undefined : this.get(tenantName);
+    return isUndefined(tenantName) ? undefined : this.getTenantByInfo(tenantName);
   }
 }
