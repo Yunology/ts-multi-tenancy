@@ -12,7 +12,7 @@ export function tenantMiddleware(
   const origin = req.originalUrl;
   const tenantService = getTenantService();
   const header = req.header(tenantService.tenantHeaderName);
-  const tenant = tenantService.get(header);
+  const tenant = tenantService.getTenantByInfo(header);
   if (isUndefined(tenant)) {
     throw new Error('Unknown Tenant.');
   } else if (!tenant.isAllowDomain(origin)) {

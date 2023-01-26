@@ -20,7 +20,7 @@ export default class TestConnection {
   }
 
   getTenant(): RuntimeTenant {
-    return getTenantService().get(this.getTenantName)!;
+    return getTenantService().getTenantByInfo(this.getTenantName)!;
   }
 
   getModule<T extends Service>(t: (new (...args: any[]) => T) | string): T {
