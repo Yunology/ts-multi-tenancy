@@ -18,6 +18,7 @@ import {
 import TestConnection from '../test_connection';
 import { systemDb, tenant } from '../test_data';
 import { AService } from '../a_service';
+import { BService } from '../b_service';
 
 chaiUse(chaiAsPromised);
 chaiShould();
@@ -37,7 +38,9 @@ export const mochaHooks = {
     );
 
     initPlans(() => ({
-      [conn.getPlanName]: new TenantPlanInfo(conn.getPlanName, [AService], [
+      [conn.getPlanName]: new TenantPlanInfo(conn.getPlanName, [
+        AService, BService,
+      ], [
         Tenant, Database,
       ], []),
     }));
@@ -45,6 +48,7 @@ export const mochaHooks = {
     await initMultiTenancy(
       async () => ({
         [AService.name]: new AService(),
+        [BService.name]: new BService(),
       }),
       async (systemManager) => {
         systemDb.url = DB_URL!;

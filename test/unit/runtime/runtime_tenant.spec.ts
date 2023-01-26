@@ -1,12 +1,36 @@
 // test/unit/runtime/runtime_tenant.spec.ts
 import { expect } from 'chai';
+import { v4 } from 'uuid';
 
 import { Permission, TenantPlanInfo } from 'entry';
 import { RuntimeTenant, RuntimeService } from 'runtime';
 
 import { AService } from '../../a_service';
+import { BService } from '../../b_service';
 
 describe('RuntimeTenant Entry', () => {
+  describe('Method runtimeServiceInitlialize', () => {
+    it('Should respect init order', async () => {
+      const aService = new AService();
+      const bService = new BService();
+
+      const rt = new RuntimeTenant(
+        v4(),
+        'name',
+        'orgName',
+        true,
+        { database: '' },
+        new TenantPlanInfo('', [], [], []),
+        {
+          [AService.name]: new RuntimeService(aService),
+          [BService.name]: new RuntimeService(bService),
+        },
+      );
+      await rt.runtimeServiceInitlialize();
+      expect(bService.initDate.getTime()).to.be.greaterThan(aService.initDate.getTime());
+    });
+  });
+
   describe('Method getConfig', () => {
     it('Should get not exists key value without default', () => {
       const rt = new RuntimeTenant(
