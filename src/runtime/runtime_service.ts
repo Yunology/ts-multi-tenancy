@@ -17,7 +17,7 @@ export class RuntimeService {
       throw new Error(`TenantID/Name: ${runtimeTenant.tenantId}/${runtimeTenant.identityName} already inited ${this.service.constructor.name}.`);
     }
     this.inited = true;
-    return this.service.init(runtimeTenant);
+    return this.service.setupByTenant(runtimeTenant);
   }
 
   get isInited(): boolean {
