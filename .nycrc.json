@@ -5,6 +5,7 @@
       "src/**"
     ],
     "exclude": [
+      "src/cli_command/**",
       "src/migration/**",
       "src/types/**",
       "src/cli_datasource.ts"
