@@ -4,21 +4,15 @@ import { EntityManager } from 'typeorm';
 
 import { DatabaseInfrastructure, Database } from 'index';
 
-import { autoRollbackTransaction } from '../hook.spec';
+import { conn } from '../hook.spec';
 
 describe('Database Infrastructure', () => {
   describe('Method getDatabases', () => {
-    it('Should get empty because there is nothing in db', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
-        const dbs = await DatabaseInfrastructure.getInstance().getDatabases(
+    it('Should get all databases', async () => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
+        const originDbs = await DatabaseInfrastructure.getInstance().getDatabases(
           manager,
         );
-        expect(dbs.length).to.be.eq(0);
-      });
-    });
-
-    it('Should get all databases', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
         await manager
           .getRepository(Database)
           .save({ name: 'name1', url: 'url1' });
@@ -29,7 +23,7 @@ describe('Database Infrastructure', () => {
         const dbs = await DatabaseInfrastructure.getInstance().getDatabases(
           manager,
         );
-        expect(dbs.length).to.be.eq(2);
+        expect(dbs.length).to.be.eq(originDbs.length + 2);
         expect(dbs.find(({ name }) => name === 'name1')).not.to.be.undefined;
         expect(dbs.find(({ name }) => name === 'name2')).not.to.be.undefined;
         expect(dbs.find(({ name }) => name === 'not exists')).to.be.undefined;
@@ -39,7 +33,7 @@ describe('Database Infrastructure', () => {
 
   describe('Method insert', () => {
     it('Should insert a database', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         const inserted = await DatabaseInfrastructure.getInstance().insert(
           manager,
           'test-name',
