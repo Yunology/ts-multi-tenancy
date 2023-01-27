@@ -45,6 +45,7 @@ export class RuntimeTenant {
 
   async runtimeServiceInitlialize(): Promise<void> {
     for (const rs of Object.values(this.runtimeServices)) {
+      // eslint-disable-next-line no-await-in-loop
       await rs.initService(this);
     }
   }

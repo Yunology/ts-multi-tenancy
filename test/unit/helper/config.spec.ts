@@ -11,7 +11,11 @@ describe('Helper Config', () => {
 
       class NotExtendedServiceClass {}
 
-      expect(() => SetupDefaultConfig<NotExtendedServiceConfig>({})(NotExtendedServiceClass)).to.throw(
+      expect(() =>
+        SetupDefaultConfig<NotExtendedServiceConfig>({})(
+          NotExtendedServiceClass,
+        ),
+      ).to.throw(
         `SetupDefaultConfig can only use at Service's child classes.`,
       );
     });

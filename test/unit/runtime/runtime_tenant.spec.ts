@@ -27,7 +27,9 @@ describe('RuntimeTenant Entry', () => {
         },
       );
       await rt.runtimeServiceInitlialize();
-      expect(bService.initDate.getTime()).to.be.greaterThan(aService.initDate.getTime());
+      expect(bService.initDate.getTime()).to.be.greaterThan(
+        aService.initDate.getTime(),
+      );
     });
   });
 

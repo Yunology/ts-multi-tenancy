@@ -7,7 +7,9 @@ import { tenant } from '../../test_data';
 describe('TenantService', () => {
   describe('Method getTenantByInfo', () => {
     it('Should return undefined with exists tenantName', () => {
-      const gotTenant = getTenantService().getTenantByInfo(`${tenant.orgName}-${tenant.name}`);
+      const gotTenant = getTenantService().getTenantByInfo(
+        `${tenant.orgName}-${tenant.name}`,
+      );
       expect(gotTenant).not.to.be.undefined;
       expect(gotTenant!.tenantId).to.be.eq(tenant.id);
     });

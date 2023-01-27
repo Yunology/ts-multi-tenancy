@@ -10,9 +10,8 @@ describe('Database Infrastructure', () => {
   describe('Method getDatabases', () => {
     it('Should get all databases', async () => {
       await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
-        const originDbs = await DatabaseInfrastructure.getInstance().getDatabases(
-          manager,
-        );
+        const originDbs =
+          await DatabaseInfrastructure.getInstance().getDatabases(manager);
         await manager
           .getRepository(Database)
           .save({ name: 'name1', url: 'url1' });

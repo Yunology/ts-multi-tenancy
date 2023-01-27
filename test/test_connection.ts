@@ -2,7 +2,10 @@
 import { DataSource, EntityManager } from 'typeorm';
 
 import {
-  getDataSource, RuntimeTenant, Service, getTenantService,
+  getDataSource,
+  RuntimeTenant,
+  Service,
+  getTenantService,
 } from 'index';
 import { tenant } from './test_data';
 

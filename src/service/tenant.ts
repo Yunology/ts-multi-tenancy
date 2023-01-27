@@ -34,6 +34,7 @@ export class TenantService {
   async precreateTenantries(manager: EntityManager): Promise<void> {
     const tenants = await manager.getRepository(Tenant).find({ where: {} });
     for (const tenant of tenants) {
+      // eslint-disable-next-line no-await-in-loop
       const runtimeTenant = await this.precreateTenant(tenant);
       this.runtimeTenants[tenant.id] = runtimeTenant;
     }
@@ -41,8 +42,10 @@ export class TenantService {
 
   async initlializeTenantries(): Promise<void> {
     for (const tenant of Object.values(this.runtimeTenants)) {
+      /* eslint-disable no-await-in-loop */
       await tenant.runtimeServiceInitlialize();
       await tenant.configInitlialize();
+      /* eslint-enable no-await-in-loop */
     }
   }
 
@@ -53,7 +56,9 @@ export class TenantService {
     const runtimeServices = Object.assign(
       {},
       ...modulesName.map((eachModuleName) => ({
-        [eachModuleName]: new RuntimeService(this.loadedModules[eachModuleName]),
+        [eachModuleName]: new RuntimeService(
+          this.loadedModules[eachModuleName],
+        ),
       })),
     );
     const rt = new RuntimeTenant(
@@ -77,9 +82,10 @@ export class TenantService {
   getTenantByInfo(idOrName: string | undefined): RuntimeTenant | undefined {
     return isUndefined(idOrName)
       ? undefined
-      : Object.values(this.runtimeTenants).find(({ tenantId, identityName }) =>
-        tenantId === idOrName || identityName === idOrName,
-      );
+      : Object.values(this.runtimeTenants).find(
+          ({ tenantId, identityName }) =>
+            tenantId === idOrName || identityName === idOrName,
+        );
   }
 
   async new(dto: CreateTenantDTO): Promise<RuntimeTenant> {
@@ -120,6 +126,8 @@ export class TenantService {
 
   getTenantByHeaderFromReqeust(req: Request): RuntimeTenant | undefined {
     const tenantName = req.header(this.headerName);
-    return isUndefined(tenantName) ? undefined : this.getTenantByInfo(tenantName);
+    return isUndefined(tenantName)
+      ? undefined
+      : this.getTenantByInfo(tenantName);
   }
 }

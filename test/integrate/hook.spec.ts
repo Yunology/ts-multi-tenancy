@@ -38,11 +38,12 @@ export const mochaHooks = {
     );
 
     initPlans(() => ({
-      [conn.getPlanName]: new TenantPlanInfo(conn.getPlanName, [
-        AService, BService,
-      ], [
-        Tenant, Database,
-      ], []),
+      [conn.getPlanName]: new TenantPlanInfo(
+        conn.getPlanName,
+        [AService, BService],
+        [Tenant, Database],
+        [],
+      ),
     }));
     await initInfrastructures(() => Promise.resolve());
     await initMultiTenancy(

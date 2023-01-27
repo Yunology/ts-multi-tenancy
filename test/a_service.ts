@@ -8,7 +8,9 @@ export class AService extends Service {
   async setupByTenant(rt: RuntimeTenant): Promise<AService> {
     await super.setupByTenant(rt);
     this.initDate = new Date();
-    await new Promise((resolve) => { setTimeout(resolve, 1000); })
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
 
     return this;
   }

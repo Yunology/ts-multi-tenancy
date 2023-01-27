@@ -87,7 +87,7 @@ describe('Service class', () => {
         bar: number;
       }
 
-      class EmptyDefaultConfigClass extends Service{}
+      class EmptyDefaultConfigClass extends Service {}
 
       const rt = new RuntimeTenant(
         'id-test',
