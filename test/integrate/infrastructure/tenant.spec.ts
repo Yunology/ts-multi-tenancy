@@ -1,5 +1,6 @@
 // test/integrate/infrastructure/tenant.spec.ts
 import { expect } from 'chai';
+import { v4 } from 'uuid';
 import { EntityManager } from 'typeorm';
 
 import { Database, getPlan, Tenant, TenantInfrastructure } from 'index';
@@ -7,7 +8,46 @@ import { Database, getPlan, Tenant, TenantInfrastructure } from 'index';
 import { conn } from '../hook.spec';
 
 describe('Tenant Infrastructure', () => {
-  describe('Method getTenants', () => {
+  describe('Method getById', () => {
+    it('Should raise error because getting not exists tenant', async () => {
+      await conn.autoRollbackSerialTran(async (manager) => {
+        const notExistsId = v4();
+
+        await expect(
+          TenantInfrastructure.getInstance().getById(manager, notExistsId),
+        ).to.be.rejectedWith(
+          Error,
+          `No such entry with given condition {"id":"${notExistsId}"} exists.`
+        );
+      });
+    });
+
+    it('Should get one tenant', async () => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
+        const plan = getPlan(conn.getPlanName);
+        const id = v4();
+
+        await expect(
+          TenantInfrastructure.getInstance().getById(manager, id),
+        ).to.be.rejectedWith(
+          Error,
+          `No such entry with given condition {"id":"${id}"} exists.`
+        );
+
+        await manager.getRepository(Tenant).save({
+          id,
+          name: 'name',
+          orgName: 'orgName',
+          activate: false,
+          plan,
+        });
+        const getByIdResult = await TenantInfrastructure.getInstance().getById(manager, id);
+        expect(getByIdResult.id).to.be.eq(id)
+      });
+    });
+  });
+
+  describe('Method getTenantries', () => {
     it('Should get all tenantriess', async () => {
       await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         const plan = getPlan(conn.getPlanName);
