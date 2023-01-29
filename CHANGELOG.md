@@ -2,9 +2,21 @@
 
 ## [Unreleased](https://github.com/yunology/ts-multi-tenancy/tree/HEAD)
 
-[Full Changelog](https://github.com/yunology/ts-multi-tenancy/compare/v0.0.8...HEAD)
+[Full Changelog](https://github.com/yunology/ts-multi-tenancy/compare/v0.0.9...HEAD)
 
-**Closed issues:**
+**Fixed bugs:**
+
+- Initialize order is required, init method and tenant get method are wrong [\#26](https://github.com/Yunology/ts-multi-tenancy/issues/26)
+
+**Merged pull requests:**
+
+- Fix/26 [\#27](https://github.com/Yunology/ts-multi-tenancy/pull/27) ([jackey8616](https://github.com/jackey8616))
+
+## [v0.0.9](https://github.com/yunology/ts-multi-tenancy/tree/v0.0.9) (2023-01-25)
+
+[Full Changelog](https://github.com/yunology/ts-multi-tenancy/compare/v0.0.8...v0.0.9)
+
+**Fixed bugs:**
 
 - cli command `tsmt migration:generate` is broken [\#18](https://github.com/Yunology/ts-multi-tenancy/issues/18)
 
