@@ -26,7 +26,7 @@ module.exports = {
         'ts': 'never',
       },
     ],
-    'function-paren-newline': ['error', 'consistent'],
+    'function-paren-newline': 'off',
     'no-console': 'off',
     'import/prefer-default-export': 'off',
     'class-methods-use-this': 'off',
@@ -49,8 +49,16 @@ module.exports = {
       rules: { '@typescript-eslint/no-unused-vars': 'off' }
     },
     {
-      files: [ 'test/**/*.ts' ],
-      rules: { 'no-unused-expressions': 'off' },
+      files: [ 'test/**/*.spec.ts'],
+      rules: {
+        'no-unused-expressions': 'off',
+        'max-classes-per-file': 'off',
+        '@typescript-eslint/no-empty-interface': 'off',
+      },
+    },
+    {
+      files: [ 'src/infrastructure/**/*.ts'],
+      rules: { 'no-use-before-define': 'off' },
     },
   ],
   settings: {

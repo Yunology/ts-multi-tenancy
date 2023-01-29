@@ -14,10 +14,12 @@ export class RuntimeService {
 
   async initService(runtimeTenant: RuntimeTenant): Promise<Service> {
     if (this.isInited) {
-      throw new Error(`TenantID/Name: ${runtimeTenant.tenantId}/${runtimeTenant.identityName} already inited ${this.service.constructor.name}.`);
+      throw new Error(
+        `TenantID/Name: ${runtimeTenant.tenantId}/${runtimeTenant.identityName} already inited ${this.service.constructor.name}.`,
+      );
     }
     this.inited = true;
-    return this.service.init(runtimeTenant);
+    return this.service.setupByTenant(runtimeTenant);
   }
 
   get isInited(): boolean {

@@ -2,35 +2,28 @@
 import { config } from 'dotenv';
 import { use as chaiUse, should as chaiShould } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { EntityManager, LoggerOptions } from 'typeorm';
+import { LoggerOptions } from 'typeorm';
 
 import {
-  getSystemDataSource,
   createSystemDataSource,
   initInfrastructures,
   initPlans,
   initMultiTenancy,
   TenantPlanInfo,
+  getPlan,
+  Database,
+  Tenant,
 } from 'index';
+
+import TestConnection from '../test_connection';
+import { systemDb, tenant } from '../test_data';
+import { AService } from '../a_service';
+import { BService } from '../b_service';
 
 chaiUse(chaiAsPromised);
 chaiShould();
 
-export async function autoRollbackTransaction(
-  runInTransaction: (manager: EntityManager) => Promise<void>,
-): Promise<void> {
-  const qr = getSystemDataSource().createQueryRunner();
-  await qr.connect();
-  await qr.startTransaction('SERIALIZABLE');
-
-  try {
-    await runInTransaction(qr.manager);
-  } finally {
-    await qr.rollbackTransaction();
-    await qr.release();
-  }
-}
-
+export const conn = new TestConnection();
 export const mochaHooks = {
   async beforeAll(): Promise<void> {
     config({ path: `.env.${process.env.ENV_NAME || 'test'}` });
@@ -45,13 +38,26 @@ export const mochaHooks = {
     );
 
     initPlans(() => ({
-      'TEST-PLAN': new TenantPlanInfo('TEST-PLAN', [], [], []),
+      [conn.getPlanName]: new TenantPlanInfo(
+        conn.getPlanName,
+        [AService, BService],
+        [Tenant, Database],
+        [],
+      ),
     }));
     await initInfrastructures(() => Promise.resolve());
     await initMultiTenancy(
-      () => Promise.resolve({}),
+      async () => ({
+        [AService.name]: new AService(),
+        [BService.name]: new BService(),
+      }),
+      async (systemManager) => {
+        systemDb.url = DB_URL!;
+        tenant.plan = getPlan(conn.getPlanName);
+        await systemManager.getRepository(Database).save(systemDb);
+        await systemManager.getRepository(Tenant).save(tenant);
+      },
       () => Promise.resolve(),
-      undefined,
       'X-TEST-TENANT-HEADER',
       DB_LOGGING as LoggerOptions,
     );

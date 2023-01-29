@@ -5,7 +5,11 @@ import { CreateDatabaseDTO } from '../dto';
 import { ConfigTree } from '../helper';
 import { Database } from '../entry';
 import { DatabaseInfrastructure } from '../infrastructure';
-import { createDataSource, getDataSource, getSystemDataSource } from '../datasource';
+import {
+  createDataSource,
+  getDataSource,
+  getSystemDataSource,
+} from '../datasource';
 import { RuntimeTenant } from '../runtime';
 
 import { Service } from '.';
@@ -66,12 +70,8 @@ export class DatabaseService extends Service {
   ): Promise<void> {
     const database =
       this.databases[this.config<IDatabaseConfig>(rt).database];
-    await this.precreateTenantSchema(
-      database, schemaName, this.dbLogging,
-    );
-    await this.precreateTenantDataSource(
-      rt, database, this.dbLogging,
-    );
+    await this.precreateTenantSchema(database, schemaName, this.dbLogging);
+    await this.precreateTenantDataSource(rt, database, this.dbLogging);
   }
 
   async initDatabases(manager: EntityManager): Promise<void> {

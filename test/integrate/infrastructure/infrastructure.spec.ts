@@ -16,7 +16,7 @@ import {
   Tenant,
 } from 'index';
 
-import { autoRollbackTransaction } from '../hook.spec';
+import { conn } from '../hook.spec';
 
 class TestDatabaseInfrastructure extends InfrastructureManyModifiable<Database> {
   constructor() {
@@ -76,14 +76,14 @@ class TestDatabaseInfrastructure extends InfrastructureManyModifiable<Database> 
 describe('Infrastructure base class', () => {
   describe('Method repo', () => {
     it('Should get repo without optional class', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         const repo = new TestDatabaseInfrastructure().repo(manager);
         expect(repo.target).to.be.eq(Database);
       });
     });
 
     it('Should get repo with optional class', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         const repo = new TestDatabaseInfrastructure().repo(manager, Tenant);
         expect(repo.target).to.be.eq(Tenant);
       });
@@ -92,7 +92,7 @@ describe('Infrastructure base class', () => {
 
   describe('Method getOrNull', () => {
     it('Should get null because is not find', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         const found = await new TestDatabaseInfrastructure().getOrNull(
           manager,
           { name: 'not-exists' },
@@ -102,7 +102,7 @@ describe('Infrastructure base class', () => {
     });
 
     it('Should get one', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         await manager.getRepository(Database).save({
           name: 'exists',
           url: 'exists-url',
@@ -120,7 +120,7 @@ describe('Infrastructure base class', () => {
 
   describe('Method get', () => {
     it('Should raise error because given condition is not found', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         const condition = { name: 'not-exists' };
         await expect(
           new TestDatabaseInfrastructure().get(manager, condition),
@@ -133,7 +133,7 @@ describe('Infrastructure base class', () => {
     });
 
     it('Should get one', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         await manager.getRepository(Database).save({
           name: 'exists',
           url: 'exists-url',
@@ -150,7 +150,7 @@ describe('Infrastructure base class', () => {
 
   describe('Method add', () => {
     it('Should raise error because such entity already exists', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         await manager.getRepository(Database).save({
           name: 'already-exists',
           url: 'exists-url',
@@ -168,7 +168,7 @@ describe('Infrastructure base class', () => {
 
   describe('Method update', () => {
     it('Should raise error because such entity not exists', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         await expect(
           new TestDatabaseInfrastructure().update(
             manager,
@@ -180,7 +180,7 @@ describe('Infrastructure base class', () => {
     });
 
     it('Should update given entity with FindOneOptions', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         const db = await manager.getRepository(Database).save({
           name: 'exists',
           url: 'exists-url',
@@ -198,7 +198,7 @@ describe('Infrastructure base class', () => {
     });
 
     it('Should update given entity with FindOptionsWhere', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         const db = await manager.getRepository(Database).save({
           name: 'exists',
           url: 'exists-url',
@@ -217,7 +217,7 @@ describe('Infrastructure base class', () => {
 
   describe('Method delete', () => {
     it('Should raise error because such entity not exists', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         const condition = { name: 'not-exists' };
         await expect(
           new TestDatabaseInfrastructure().delete(manager, condition),
@@ -229,7 +229,7 @@ describe('Infrastructure base class', () => {
     });
 
     it('Should delete given entity', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         const db = await manager.getRepository(Database).save({
           name: 'exists',
           url: 'exists-url',
@@ -247,7 +247,7 @@ describe('Infrastructure base class', () => {
 
   describe('Method getMany', () => {
     it('Should get many with given condition', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
         const db1 = await manager.getRepository(Database).save({
           name: 'db1',
           url: 'exists-url',

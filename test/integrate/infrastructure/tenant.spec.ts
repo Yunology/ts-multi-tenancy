@@ -1,25 +1,59 @@
 // test/integrate/infrastructure/tenant.spec.ts
 import { expect } from 'chai';
+import { v4 } from 'uuid';
 import { EntityManager } from 'typeorm';
 
 import { Database, getPlan, Tenant, TenantInfrastructure } from 'index';
 
-import { autoRollbackTransaction } from '../hook.spec';
+import { conn } from '../hook.spec';
 
 describe('Tenant Infrastructure', () => {
-  describe('Method getTenants', () => {
-    it('Should get empty because there is nothing in db', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
-        const dbs = await TenantInfrastructure.getInstance().getTenantries(
-          manager,
+  describe('Method getById', () => {
+    it('Should raise error because getting not exists tenant', async () => {
+      await conn.autoRollbackSerialTran(async (manager) => {
+        const notExistsId = v4();
+
+        await expect(
+          TenantInfrastructure.getInstance().getById(manager, notExistsId),
+        ).to.be.rejectedWith(
+          Error,
+          `No such entry with given condition {"id":"${notExistsId}"} exists.`,
         );
-        expect(dbs.length).to.be.eq(0);
       });
     });
 
+    it('Should get one tenant', async () => {
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
+        const plan = getPlan(conn.getPlanName);
+        const id = v4();
+
+        await expect(
+          TenantInfrastructure.getInstance().getById(manager, id),
+        ).to.be.rejectedWith(
+          Error,
+          `No such entry with given condition {"id":"${id}"} exists.`,
+        );
+
+        await manager.getRepository(Tenant).save({
+          id,
+          name: 'name',
+          orgName: 'orgName',
+          activate: false,
+          plan,
+        });
+        const getByIdResult =
+          await TenantInfrastructure.getInstance().getById(manager, id);
+        expect(getByIdResult.id).to.be.eq(id);
+      });
+    });
+  });
+
+  describe('Method getTenantries', () => {
     it('Should get all tenantriess', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
-        const plan = getPlan('TEST-PLAN');
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
+        const plan = getPlan(conn.getPlanName);
+        const originTenantries =
+          await TenantInfrastructure.getInstance().getTenantries(manager);
         const db = await manager
           .getRepository(Database)
           .save({ name: 'name1', url: 'url1' });
@@ -38,21 +72,23 @@ describe('Tenant Infrastructure', () => {
           plan,
         });
 
-        const dbs = await TenantInfrastructure.getInstance().getTenantries(
-          manager,
-        );
-        expect(dbs.length).to.be.eq(2);
-        expect(dbs.find(({ name }) => name === 'name1')).not.to.be.undefined;
-        expect(dbs.find(({ name }) => name === 'name2')).not.to.be.undefined;
-        expect(dbs.find(({ name }) => name === 'not exists')).to.be.undefined;
+        const tenantries =
+          await TenantInfrastructure.getInstance().getTenantries(manager);
+        expect(tenantries.length).to.be.eq(originTenantries.length + 2);
+        expect(tenantries.find(({ name }) => name === 'name1')).not.to.be
+          .undefined;
+        expect(tenantries.find(({ name }) => name === 'name2')).not.to.be
+          .undefined;
+        expect(tenantries.find(({ name }) => name === 'not exists')).to.be
+          .undefined;
       });
     });
   });
 
   describe('Method insert', () => {
     it('Should insert a tenantry', async () => {
-      await autoRollbackTransaction(async (manager: EntityManager) => {
-        const plan = getPlan('TEST-PLAN');
+      await conn.autoRollbackSerialTran(async (manager: EntityManager) => {
+        const plan = getPlan(conn.getPlanName);
         const db = await manager
           .getRepository(Database)
           .save({ name: 'name1', url: 'url1' });
